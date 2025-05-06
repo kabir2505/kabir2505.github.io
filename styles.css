@@ -77,4 +77,11 @@ a:hover {
        /* optional: space between text and underline */
    }
 
- 
+ .res {
+     opacity: 0;
+     transition: opacity 0.3s ease;
+ }
+
+ .res:hover {
+     opacity: 1;
+ }
