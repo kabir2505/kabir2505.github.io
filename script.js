@@ -115,6 +115,7 @@ if (form) {
       '  reinit             re-initialize the weights',
       '  trip               open the IJCAI-ECAI \'26 photos',
       '  theme              toggle light / dark',
+      '  speedwagon [stand] Speedwagon explains what each Stand does',
       '  history, clear     the usual',
       'stands:  za warudo · king crimson · made in heaven · bites the dust',
       '         the hand · crazy diamond · echoes act 3 · emerald splash',
@@ -240,6 +241,92 @@ if (form) {
   STANDS['dora'] = STANDS['crazy diamond'];
   STANDS['3 freeze'] = STANDS['echoes'] = STANDS['echoes act 3'];
   STANDS['hierophant green'] = STANDS['emerald splash'];
+
+  // Speedwagon explains: a Stand card for each Stand on this page
+  const CARDS = [
+    { key: 'za warudo', name: 'The World', user: 'DIO', part: 'Part 3 · Stardust Crusaders',
+      series: 'Stops time for everyone but its user.',
+      here: 'Pauses training for 5 seconds. It also fires on its own when the model converges: colors invert, a shockwave sweeps out, then the star, Hamon ripples and "To Be Continued".',
+      summon: ['za warudo', 'the world'] },
+    { key: 'king crimson', name: 'King Crimson', user: 'Diavolo', part: 'Part 5 · Golden Wind',
+      series: 'Erases a span of time; only the user experiences what happens in it.',
+      here: 'About 300 training steps happen instantly. The points jump straight to where they would have ended up.',
+      summon: ['king crimson'] },
+    { key: 'made in heaven', name: 'Made in Heaven', user: 'Enrico Pucci', part: 'Part 6 · Stone Ocean',
+      series: 'Accelerates time itself.',
+      here: 'Training runs 8× faster for 6 seconds, leaving motion trails behind the points.',
+      summon: ['made in heaven'] },
+    { key: 'bites the dust', name: 'Killer Queen: Bites the Dust', user: 'Yoshikage Kira', part: 'Part 4 · Diamond is Unbreakable',
+      series: 'Rewinds time to an earlier moment.',
+      here: 'Plays the run backwards to step 0, then restarts it from its exact original weights.',
+      summon: ['bites the dust', 'killer queen'] },
+    { key: 'the hand', name: 'The Hand', user: 'Okuyasu Nijimura', part: 'Part 4 · Diamond is Unbreakable',
+      series: 'Its right hand erases whatever it swipes through, space included.',
+      here: 'Erases one hidden concept from the data. The remaining clusters re-spread to fill the gap: contrastive uniformity, live. Works down to 5 concepts.',
+      summon: ['the hand', 'za hando'] },
+    { key: 'crazy diamond', name: 'Crazy Diamond', user: 'Josuke Higashikata', part: 'Part 4 · Diamond is Unbreakable',
+      series: 'Restores anything it touches to a previous state.',
+      here: 'Restores the run to exactly how it was before the last Stand: weights, optimizer state, step, τ and erased concepts.',
+      summon: ['crazy diamond', 'dora'] },
+    { key: 'echoes act 3', name: 'Echoes Act 3', user: 'Koichi Hirose', part: 'Part 4 · Diamond is Unbreakable',
+      series: '"3 FREEZE": makes whatever it hits extremely heavy.',
+      here: 'Drops the temperature τ to 0.08 for 8 seconds, so clusters pull into tight, heavy knots. Then τ returns.',
+      summon: ['echoes act 3', '3 freeze', 'echoes'] },
+    { key: 'emerald splash', name: 'Hierophant Green', user: 'Noriaki Kakyoin', part: 'Part 3 · Stardust Crusaders',
+      series: '"Emerald Splash": fires a barrage of emerald energy.',
+      here: 'Augmentations hit 3× harder for 5 seconds. The loss spikes in the log, then recovers: a live robustness test.',
+      summon: ['emerald splash', 'hierophant green'] },
+    { key: "heaven's door", name: "Heaven's Door", user: 'Rohan Kishibe', part: 'Part 4 · Diamond is Unbreakable',
+      series: 'Opens people up like books so their memories can be read.',
+      here: 'Hover any point in the training pane: it opens like a book, showing its raw 16-dimensional input, the one the model sees with no label.',
+      summon: ['(hover a point)'] },
+  ];
+  const norm = t => t.toLowerCase().replace(/[’']/g, "'").replace(/[-_\s]+/g, ' ').trim();
+  const findCard = t => {
+    const q = norm(t);
+    return CARDS.find(c => norm(c.name) === q || c.summon.some(a => norm(a) === q) || norm(c.key) === q || (q === 'heavens door' && c.key === "heaven's door"));
+  };
+  const standCard = c => {
+    const card = document.createElement('div');
+    card.className = 'stand-card';
+    const row = (label, text) => {
+      const r = document.createElement('div');
+      r.className = 'sc-row';
+      const l = document.createElement('span');
+      l.className = 'sc-label';
+      l.textContent = label;
+      const v = document.createElement('span');
+      v.textContent = text;
+      r.append(l, v);
+      return r;
+    };
+    const head = document.createElement('div');
+    head.className = 'sc-head';
+    head.innerHTML = '<span class="sc-menace" aria-hidden="true">ゴゴゴ</span>';
+    const title = document.createElement('div');
+    title.className = 'sc-name';
+    title.textContent = `「${c.name}」`;
+    head.prepend(title);
+    card.append(head,
+      row('STAND USER', `${c.user} — ${c.part}`),
+      row('IN THE SERIES', c.series),
+      row('ON THIS PAGE', c.here),
+      row('SUMMON', c.summon.join('  ·  ')));
+    return card;
+  };
+  COMMANDS.speedwagon = args => {
+    if (args.length) {
+      const c = findCard(args.join(' '));
+      return c ? standCard(c) : block(`Speedwagon: "I've never heard of a Stand called '${args.join(' ')}'!" (try: speedwagon)`, 'err');
+    }
+    return block([
+      'SPEEDWAGON IS EXPLAINING! Here are the Stands on this page:',
+      '',
+      ...CARDS.map(c => `  ${c.name.padEnd(30)} ${c.summon[0]}`),
+      '',
+      'For a Stand card: speedwagon <stand>   e.g. speedwagon king crimson',
+    ].join('\n'));
+  };
   COMMANDS.vi = COMMANDS.nano = COMMANDS.vim;
   COMMANDS.top = COMMANDS.htop;
   COMMANDS.python3 = COMMANDS.python;

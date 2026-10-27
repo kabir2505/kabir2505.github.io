@@ -10,6 +10,8 @@ It never sees the colors; they're hidden concepts shown only to you. When it con
 
 Type a Stand's name into the **Try the terminal** box at the bottom of the page. Each one really does something to the training run:
 
+Not sure what a Stand does? Ask Speedwagon: `speedwagon` lists every Stand, and `speedwagon king crimson` (or any Stand or alias) prints its Stand card: user, Part, what it does in the series, and what it does to the model here.
+
 | Stand | What it does to the model | What you see |
 |---|---|---|
 | `za warudo` / `the world` | Training stops for 5s (also fires automatically when the model converges) | Inverted colors and a shockwave |
