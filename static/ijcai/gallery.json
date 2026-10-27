@@ -6,6 +6,7 @@
   "poster": "static/ijcai/full/charles-bridge-video.webp",
   "w": 1280,
   "h": 720,
+  "preview": "static/ijcai/video/charles-bridge-video-preview.mp4",
   "caption": "Charles Bridge, Prague",
   "group": "trip",
   "featured": true

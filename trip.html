@@ -10,6 +10,8 @@
         try { var t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
     </script>
     <link rel="stylesheet" href="styles.css">
+    <link rel="preload" href="static/ijcai/gallery.json" as="fetch" crossorigin>
+    <link rel="preload" href="gallery.js" as="script">
 </head>
 <body>
     <header class="titlebar">

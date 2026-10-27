@@ -1,6 +1,7 @@
 // IJCAI trip gallery (trip.html). Renders from static/ijcai/gallery.json (built by
-// tools/build_gallery.py) once the section is near the viewport. Thumbnails lazy-load,
-// videos load nothing until played, and the highlight clip autoplays only while visible.
+// tools/build_gallery.py). The first row of thumbnails loads first; the highlight clip
+// (a light 480p preview) only starts downloading once those are in, and the full clip
+// with sound loads only on demand. Other videos load nothing until played.
 (function () {
   'use strict';
   const root = document.getElementById('gallery');
@@ -9,6 +10,7 @@
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const saveData = !!(navigator.connection && navigator.connection.saveData);
   let items = [], shown = [], current = -1, filter = 'all';
+  const EAGER = 6;                                 // thumbnails fetched first, at high priority
 
   const el = (tag, cls, attrs) => {
     const e = document.createElement(tag);
@@ -17,10 +19,8 @@
     return e;
   };
 
-  const near = new IntersectionObserver((es) => {
-    if (es[0].isIntersecting) { near.disconnect(); load(); }
-  }, { rootMargin: '600px 0px' });
-  near.observe(root);
+  // the gallery is the whole trip page, so fetch the manifest right away (trip.html preloads it)
+  load();
 
   async function load() {
     try {
@@ -31,28 +31,50 @@
     }
     root.textContent = '';
     const feat = items.find((i) => i.featured);
-    if (feat) root.append(feature(feat));
+    const fig = feat ? feature(feat) : null;
+    if (fig) root.append(fig);
     root.append(filters(), el('div', 'g-grid'));
     renderGrid();
+    if (fig) startWhenReady(fig.startPreview);
+  }
+
+  // wait for the first row of thumbnails (or ~2.5s) so the clip doesn't compete with them for bandwidth
+  function startWhenReady(start) {
+    const first = [...root.querySelectorAll('.g-thumb img')].slice(0, EAGER);
+    const loaded = first.map((img) => (img.complete ? Promise.resolve() : new Promise((r) => { img.onload = img.onerror = r; })));
+    Promise.race([Promise.all(loaded), new Promise((r) => setTimeout(r, 2500))]).then(start);
   }
 
   // ---- highlight ----
   function feature(item) {
     const fig = el('figure', 'g-feature');
-    const v = el('video', '', { muted: '', loop: '', playsinline: '', preload: 'none', poster: item.poster, src: item.src });
+    // no src yet: the poster shows immediately; the light preview is attached once the grid has loaded
+    const v = el('video', '', { muted: '', loop: '', playsinline: '', preload: 'none', poster: item.poster });
     v.muted = true;
+    let full = false;
+    const useFull = () => {                       // swap to the full clip (with sound), keeping the position
+      if (full) return;
+      full = true;
+      const t = v.currentTime;
+      v.src = item.src;
+      v.addEventListener('loadedmetadata', () => { v.currentTime = t; }, { once: true });
+    };
     const badge = el('span', 'g-badge mono');
     badge.textContent = '★ highlight of the trip';
     const sound = el('button', 'g-btn mono', { type: 'button', 'aria-label': 'Toggle sound' });
     sound.textContent = 'sound off';
     sound.addEventListener('click', () => {
+      if (v.muted) useFull();                     // the preview is silent
       v.muted = !v.muted;
       sound.textContent = v.muted ? 'sound off' : 'sound on';
       if (v.paused) v.play().catch(() => {});
     });
     const play = el('button', 'g-btn g-play mono', { type: 'button', 'aria-label': 'Play or pause' });
     const sync = () => (play.textContent = v.paused ? '▶ play' : '❚❚ pause');
-    play.addEventListener('click', () => (v.paused ? v.play().catch(() => {}) : v.pause()));
+    play.addEventListener('click', () => {
+      if (!v.getAttribute('src')) v.src = item.preview || item.src;
+      v.paused ? v.play().catch(() => {}) : v.pause();
+    });
     v.addEventListener('play', sync);
     v.addEventListener('pause', sync);
     sync();
@@ -63,12 +85,14 @@
     fig.append(v, badge, controls, cap);
 
     // autoplay muted only while on screen (and only if the visitor hasn't asked for less)
-    if (!reduce && !saveData) {
+    fig.startPreview = () => {
+      if (reduce || saveData) return;
+      if (!v.getAttribute('src')) v.src = item.preview || item.src;
       new IntersectionObserver((es) => {
         if (es[0].isIntersecting) v.play().catch(() => {});
         else v.pause();
       }, { threshold: 0.5 }).observe(v);
-    }
+    };
     return fig;
   }
 
@@ -97,8 +121,8 @@
     shown.forEach((item, idx) => {
       const b = el('button', 'g-thumb' + (item.type === 'video' ? ' is-video' : ''), { type: 'button', 'aria-label': item.caption || 'photo' });
       const img = el('img', '', {
-        src: item.thumb, alt: item.caption || '', loading: 'lazy', decoding: 'async',
-        width: item.w, height: item.h,
+        src: item.thumb, alt: item.caption || '', decoding: 'async', width: item.w, height: item.h,
+        ...(idx < EAGER ? { fetchpriority: 'high' } : { loading: 'lazy' }),
       });
       b.append(img);
       if (item.caption) {

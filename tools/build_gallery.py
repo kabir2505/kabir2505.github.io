@@ -4,7 +4,8 @@
 usage: python3 tools/build_gallery.py "<source dir>" [out dir]
 
   photos -> thumb (640px long side webp, ~35KB) + full (1600px long side webp, ~200KB)
-  videos -> H.264 720p mp4 (+faststart), poster thumb + poster full
+  videos -> H.264 720p mp4 (+faststart), poster thumb + poster full;
+            the featured clip also gets a silent 480p preview for autoplay
   subfolders become groups (e.g. food/); already-built files are skipped,
   so re-run it after adding new pictures.
 """
@@ -118,7 +119,16 @@ def build_video(src, sl, group, featured):
     if stale(thumb, poster_full):
         webp(poster_full, thumb, long_side=640, q=64)
     w, h = size(poster_full)
-    return {'type': 'video', 'src': rel(mp4), 'thumb': rel(thumb), 'poster': rel(poster_full), 'w': w, 'h': h}
+    item = {'type': 'video', 'src': rel(mp4), 'thumb': rel(thumb), 'poster': rel(poster_full), 'w': w, 'h': h}
+    if featured:
+        # a light, silent 480p loop for the autoplaying highlight; the full clip loads only on demand
+        preview = OUT / 'video' / f'{sl}-preview.mp4'
+        if stale(preview, mp4):
+            vf = "scale='if(gt(iw,ih),-2,480)':'if(gt(iw,ih),480,-2)',fps=24"
+            run('ffmpeg', '-y', '-v', 'error', '-i', str(mp4), '-an', '-vf', vf, '-c:v', 'libx264', '-preset', 'slow',
+                '-crf', '31', '-profile:v', 'high', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', str(preview))
+        item['preview'] = rel(preview)
+    return item
 
 
 def rel(p):
