@@ -6,6 +6,54 @@ It's styled as a zsh terminal (light and dark). Next to the content, a small neu
 
 It never sees the colors; they're hidden concepts shown only to you. When it converges, time stops, the clusters form a star, Hamon ripples pulse, and "To Be Continued" rolls in.
 
+## How the model works (SimCLR in your browser)
+
+**Where it runs:** on each visitor's own CPU, inside their browser tab. GitHub Pages only serves static files; `ssl.js` downloads, and the tab trains its own copy of the model. The model is tiny (610 parameters, about 1 ms per step), so one step per screen refresh is plenty. It pauses when the tab is hidden and stops computing once it converges.
+
+### 1. Data
+- 8 hidden "concepts": prototype vectors $\mu_1,\dots,\mu_8 \in \mathbb{R}^{16}$, each $\sim \mathcal{N}(0, I)$.
+- 256 samples, 32 per concept: $x = \mu_y + 0.45\,\varepsilon$, with $\varepsilon \sim \mathcal{N}(0, I)$.
+- The label $y$ is **never shown to the model**. It only colors the dots for you.
+
+### 2. Augmentations (two views per sample)
+- Scale the whole vector by $s \sim U(0.8, 1.2)$.
+- Then, per dimension: with probability 0.25 mask it to 0, otherwise use $s\,x_d + 0.3\,\mathcal{N}(0,1)$.
+
+### 3. Encoder
+A 16 → 32 → 2 MLP (610 parameters), normalized onto the unit circle $S^1$:
+
+$$h = \tanh(W_1 x + b_1),\qquad z = W_2 h + b_2,\qquad u = \frac{z}{\lVert z\rVert}$$
+
+### 4. Objective: NT-Xent / InfoNCE
+Each step draws $B = 64$ samples and makes 2 views of each ($2B = 128$ embeddings). Views $2k$ and $2k{+}1$ are a positive pair; every other view in the batch is a negative. With $\tau = 0.2$:
+
+$$\ell_i = -\log \frac{\exp\big(u_i^\top u_{p(i)}/\tau\big)}{\sum_{j \ne i} \exp\big(u_i^\top u_j/\tau\big)},\qquad \mathcal{L} = \frac{1}{2B}\sum_{i=1}^{2B} \ell_i$$
+
+It's a 127-way "which one is my partner?" classification. The numerator pulls the two views together (**alignment**); the denominator pushes everything else apart (**uniformity**).
+
+### 5. Training
+- Backprop is written by hand in JavaScript, through the softmax, the normalization ($\partial u/\partial z = (I - uu^\top)/\lVert z\rVert$), $W_2$, $\tanh$ and $W_1$. Gradients were checked against finite differences (relative error about $10^{-6}$).
+- Adam, learning rate $3\times10^{-3}$, $\beta = (0.9, 0.999)$, one step per animation frame.
+
+### 6. Metrics in the training card
+- **InfoNCE:** $\mathcal{L}$ above, smoothed.
+- **align:** $\mathbb{E}\,\lVert u_a - u_b\rVert^2$ over positive pairs. Lower means the two views agree more.
+- **uniform:** $\log \mathbb{E}\, e^{-2\lVert u_i - u_j\rVert^2}$ over different samples. More negative means the points are spread more evenly. (Both from Wang & Isola, 2020.)
+
+### 7. Why a star, and why the loss stalls near 3.3
+- Alignment pulls each concept's samples into a tight cluster; uniformity spreads the 8 clusters evenly around the circle. Connecting their centers gives the {8/3} star.
+- In a batch of 128 views, each concept has about 16 views that look nearly identical, yet the loss treats them as negatives. These **false negatives** (class collision) cap how confident the model can be, so the loss bottoms out near $\log 16 \approx 2.8$ plus a bit, about 3.3 in practice.
+- It counts as converged after step 1,200 once the loss stops improving (less than 0.01 over 600 steps) and the clusters are tight and evenly spaced, or at step 5,000.
+
+### How it differs from real SimCLR
+| Real SimCLR | Here |
+|---|---|
+| ResNet on images | 610-parameter MLP on synthetic 16-D points |
+| Projection head; loss on $g(h)$, representation is $h$ | No separate head; the 2-D output is used directly so it can be plotted |
+| 128-D sphere, batches of thousands, crops and color jitter | Unit circle, batch 64, noise / masking / scaling |
+
+The core objective, NT-Xent with in-batch negatives and a temperature, is the same, just small enough to train live in a browser tab.
+
 ## Time Stands 🌟
 
 Type a Stand's name into the **Try the terminal** box at the bottom of the page. Each one really does something to the training run:
