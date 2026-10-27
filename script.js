@@ -116,6 +116,7 @@ if (form) {
       '  trip               open the IJCAI-ECAI \'26 photos',
       '  theme              toggle light / dark',
       '  history, clear     the usual',
+      'time stands: za warudo · king crimson · made in heaven · bites the dust',
       '…and a few things you might try in a real terminal (or in a JoJo fight).',
     ].join('\n')),
     ls: () => {
@@ -209,14 +210,18 @@ if (form) {
     ora: () => block('ORA ORA ORA ORA ORA ORA ORA ORA!', 'ok'),
     muda: () => block('MUDA MUDA MUDA MUDA MUDA MUDA!', 'err'),
     yare: () => block('yare yare daze…', 'dim'),
-    za: (args, raw) => (/^za\s+warudo$/i.test(raw) ? COMMANDS['the'](['world'], 'the world') : block('zsh: command not found: za', 'err')),
-    the: args => {
-      if ((args[0] || '').toLowerCase() !== 'world') return block(`zsh: command not found: the`, 'err');
-      const a = api();
-      if (a) (a.timeStop || a.freeze)(5000);
-      return block('ZA WARUDO! Time has stopped. (training paused for 5 seconds)', 'warn');
-    },
   };
+
+  // time Stands: each one really does something to the training run in pane 1
+  const BUSY = 'time is already being manipulated… wait for it to resume.';
+  const STANDS = {
+    'za warudo': a => (a.timeStop(5000) ? block('ZA WARUDO! Time has stopped. (training paused for 5 seconds)', 'warn') : block(BUSY, 'dim')),
+    'king crimson': a => (a.kingCrimson() ? block('KING CRIMSON! The time in between has been erased.', 'warn') : block(BUSY, 'dim')),
+    'made in heaven': a => (a.madeInHeaven() ? block('MADE IN HEAVEN! Time accelerates…', 'warn') : block(BUSY, 'dim')),
+    'bites the dust': a => (a.bitesTheDust() ? block('KILLER QUEEN — BITES THE DUST! Rewinding to step 0…', 'warn') : block(BUSY, 'dim')),
+  };
+  STANDS['the world'] = STANDS['za warudo'];
+  STANDS['killer queen'] = STANDS['bites the dust'];
   COMMANDS.vi = COMMANDS.nano = COMMANDS.vim;
   COMMANDS.top = COMMANDS.htop;
   COMMANDS.python3 = COMMANDS.python;
@@ -228,7 +233,8 @@ if (form) {
     history.push(text);
     hIdx = history.length;
     const [cmd, ...args] = text.split(/\s+/);
-    const fn = COMMANDS[cmd.toLowerCase()];
+    const stand = STANDS[text.toLowerCase().replace(/[-_\s]+/g, ' ')];
+    const fn = stand ? () => (api() ? stand(api()) : block('the Stand has no one to act on', 'err')) : COMMANDS[cmd.toLowerCase()];
     const result = fn ? fn(args, text) : block(`zsh: command not found: ${cmd}`, 'err');
     if (cmd === 'clear') return;
     const entry = document.createElement('div');

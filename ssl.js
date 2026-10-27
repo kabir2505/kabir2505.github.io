@@ -55,6 +55,8 @@
     }
     init();
     m.init = init;
+    m.getParams = () => Float64Array.from(P);
+    m.setParams = (q) => { P.set(q); M1.fill(0); M2.fill(0); m.step = 0; };
 
     // forward one input (x at xs[xo]) -> h at hs[ho], unit u at us[uo]; returns ||z||
     function forward(xs, xo, hs, ho, us, uo) {
@@ -235,6 +237,7 @@
     let lossEma = null, alignEma = 0, unifEma = 0, best = Infinity, stall = 0;
     let status = 'training', convergedAt = 0, frozenUntil = 0;
     let stopStart = -1e9, rippleUntil = 0, stopToken = 0;  // ZA WARUDO + Hamon effects
+    let heavenUntil = 0, rewinding = null, P0 = null, trail = [];  // Made in Heaven, Bites the Dust
     const wrap = hero.closest('.canvas-wrap');
     let stats = null, hover = null, dirty = true, frame = 0, raf = 0, heroVisible = true;
     let colors = {};
@@ -242,7 +245,7 @@
     function readTheme() {
       const cs = getComputedStyle(document.documentElement);
       const v = (n) => cs.getPropertyValue(n).trim();
-      colors = { ink: v('--ink'), muted: v('--muted'), rule: v('--rule'), accent: v('--accent'), panel: v('--panel'), gold: v('--gold'), magenta: v('--magenta'), c: [] };
+      colors = { ink: v('--ink'), paper: v('--paper'), muted: v('--muted'), rule: v('--rule'), accent: v('--accent'), panel: v('--panel'), gold: v('--gold'), magenta: v('--magenta'), c: [] };
       for (let k = 0; k < K; k++) colors.c.push(v('--c' + k));
       dirty = true;
     }
@@ -282,11 +285,19 @@
       log('↻ re-initializing weights…', 'warn');
       if (tbc) tbc.classList.remove('show');
       stopToken++;                                     // cancel any pending time-stop callback
-      frozenUntil = 0; rippleUntil = 0;
-      if (wrap) wrap.classList.remove('timestop');
+      frozenUntil = 0; rippleUntil = 0; heavenUntil = 0;
+      if (rewinding) { clearInterval(rewinding.timer); rewinding = null; }
+      if (wrap) wrap.classList.remove('timestop', 'kingcrimson', 'bitesdust');
       setStatus('training');
       model.embed(E);
+      remember();
       // keep S as-is so the old structure visibly shatters into the new random init
+    }
+
+    // the run's starting weights + a coarse trajectory of the embedding, for Bites the Dust
+    function remember() {
+      P0 = model.getParams();
+      trail = [Float32Array.from(E)];
     }
 
     function setStatus(s) {
@@ -320,6 +331,10 @@
         log(`step ${String(model.step).padStart(4)}  loss ${lossEma.toFixed(3)}  align ${alignEma.toFixed(3)}`);
       }
       model.embed(E);
+      if (model.step % 25 === 0) {
+        trail.push(Float32Array.from(E));
+        if (trail.length > 240) trail = trail.filter((_, i) => i % 2 === 0);
+      }
       if (model.step % 200 === 0) {
         if (best - lossEma < 0.01) stall++;
         else stall = 0;
@@ -454,7 +469,15 @@
     const effectsActive = (now) => !reduce && (now - stopStart < 900 || now < rippleUntil);
 
     function drawScene(c, w, h, cx, cy, R, dot, lw, withHover) {
-      c.clearRect(0, 0, w, h);
+      if (!reduce && performance.now() < heavenUntil) {  // Made in Heaven: leave afterimages
+        c.save();
+        c.globalAlpha = 0.3;
+        c.fillStyle = colors.paper;
+        c.fillRect(0, 0, w, h);
+        c.restore();
+      } else {
+        c.clearRect(0, 0, w, h);
+      }
       c.strokeStyle = colors.rule;
       c.lineWidth = 1;
       c.beginPath(); c.arc(cx, cy, R, 0, TAU); c.stroke();
@@ -552,14 +575,15 @@
       raf = requestAnimationFrame(tick);
       frame++;
       const now = performance.now();
-      const frozen = now < frozenUntil;                // ZA WARUDO: time has stopped
+      const frozen = now < frozenUntil || !!rewinding;  // ZA WARUDO, or Bites the Dust in progress
+      const heaven = now < heavenUntil;                // Made in Heaven: time accelerates
       let moved = 0;
       if (!frozen) {
-        if (status === 'training') trainStep();
-        else if (now - convergedAt > 20000) reset();
-        moved = smooth(0.12);
+        for (let k = heaven ? 8 : 1; k > 0 && status === 'training'; k--) trainStep();
+        if (status !== 'training' && now - convergedAt > 20000) reset();
+        moved = smooth(heaven ? 0.35 : 0.12);
       }
-      if (moved > 1e-3 || (!frozen && status === 'training') || dirty || effectsActive(now)) render();
+      if (moved > 1e-3 || (!frozen && status === 'training') || dirty || heaven || effectsActive(now)) render();
     }
 
     function trainToConvergence() {
@@ -582,9 +606,89 @@
     for (const b of document.querySelectorAll('[data-tau-step]')) {
       b.addEventListener('click', () => setTau(model.tau + parseFloat(b.dataset.tauStep)));
     }
+    // ---- time Stands (typed into the prompt; see script.js) ----
+    const busy = () => !!rewinding || performance.now() < frozenUntil;
+    const flash = (cls, ms) => {
+      if (!wrap || reduce) return;
+      wrap.classList.add(cls);
+      setTimeout(() => wrap.classList.remove(cls), ms);
+    };
+
+    // King Crimson: the next ~300 steps happen, but the time in between is erased
+    function kingCrimson(n = 300) {
+      if (busy()) return false;
+      if (status !== 'training') reset();
+      const a = model.step;
+      for (let k = 0; k < n && status === 'training'; k++) { stats = model.stats(E); trainStep(); }
+      S.set(E);
+      log(`⏭ King Crimson — ${model.step - a} steps erased (step ${a} → ${model.step})`, 'warn');
+      flash('kingcrimson', 600);
+      render();
+      return true;
+    }
+
+    // Made in Heaven: time accelerates x8 for a few seconds
+    function madeInHeaven(ms = 6000) {
+      if (busy()) return false;
+      if (reduce) { trainToConvergence(); log('⏩ Made in Heaven — time accelerated to the end', 'warn'); return true; }
+      if (status !== 'training') reset();
+      heavenUntil = performance.now() + ms;
+      log('⏩ Made in Heaven — time accelerates ×8', 'warn');
+      const until = heavenUntil;
+      setTimeout(() => { if (heavenUntil === until) { log('▶ time flows normally', 'warn'); dirty = true; } }, ms);
+      return true;
+    }
+
+    // Bites the Dust: play the trajectory backwards to step 0, then restart from the same initial weights
+    function bitesTheDust(ms = 2500) {
+      if (busy() || !P0) return false;
+      const back = () => {
+        model.setParams(P0);
+        lossEma = null; best = Infinity; stall = 0; heavenUntil = 0; rippleUntil = 0;
+        if (tbc) tbc.classList.remove('show');
+        model.embed(E);
+        trail = [Float32Array.from(E)];
+        setStatus('training');
+        log('↺ back to step 0 — the same run begins again', 'warn');
+        dirty = true;
+      };
+      log('⏪ Bites the Dust — rewinding…', 'warn');
+      if (reduce) { back(); trainToConvergenceFrom(); return true; }
+      const frames = trail.slice().reverse();
+      const t0 = performance.now();
+      wrap && wrap.classList.add('bitesdust');
+      rewinding = {
+        timer: setInterval(() => {
+          const t = Math.min(1, (performance.now() - t0) / ms);
+          E.set(frames[Math.min(frames.length - 1, Math.floor(t * frames.length))]);
+          smooth(0.4);
+          render();
+          if (t >= 1) {
+            clearInterval(rewinding.timer);
+            rewinding = null;
+            if (wrap) wrap.classList.remove('bitesdust');
+            back();
+          }
+        }, 16),
+      };
+      return true;
+    }
+
+    // reduced motion: finish a restored run without animating
+    function trainToConvergenceFrom() {
+      while (status === 'training') { stats = model.stats(E); trainStep(); }
+      S.set(E);
+      render();
+    }
+
     // for the prompt in script.js
-    window.SSL.api = { reinit, setTau, timeStop: (ms) => timeStop(ms), freeze: (ms) => timeStop(ms),
-      state: () => ({ step: model.step, loss: lossEma, tau: model.tau, status }) };
+    window.SSL.api = {
+      reinit, setTau,
+      timeStop: (ms) => (busy() ? false : (timeStop(ms), true)),
+      freeze: (ms) => timeStop(ms),
+      kingCrimson, madeInHeaven, bitesTheDust,
+      state: () => ({ step: model.step, loss: lossEma, tau: model.tau, status }),
+    };
 
     // ---- lifecycle ----
     const start = () => { if (!raf && !reduce) raf = requestAnimationFrame(tick); };
@@ -599,6 +703,7 @@
     readTheme();
     model.embed(E);
     S.set(E);
+    remember();
     if (reduce) trainToConvergence();
     else start();
   }
