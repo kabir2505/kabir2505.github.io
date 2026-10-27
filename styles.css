@@ -159,7 +159,7 @@ b { font-weight: 700; }
 }
 .session { grid-area: a; min-width: 0; padding-top: 36px; }
 .session-b { grid-area: b; padding-top: 0; padding-bottom: 36px; }
-.train { grid-area: train; }
+.side-col { grid-area: train; display: flex; flex-direction: column; gap: 16px; }
 
 @media (min-width: 1080px) {
     .panes {
@@ -168,7 +168,15 @@ b { font-weight: 700; }
         grid-template-rows: auto 1fr;
         column-gap: 56px;
     }
-    .train { position: sticky; top: calc(var(--bar-h) + 24px); align-self: start; margin-top: 36px; }
+    .side-col {
+        position: sticky;
+        top: calc(var(--bar-h) + 24px);
+        align-self: start;
+        margin-top: 36px;
+        max-height: calc(100vh - var(--bar-h) - var(--status-h) - 40px);
+        overflow-y: auto;            /* short laptop screens: the column scrolls instead of getting cut off */
+        scrollbar-width: thin;
+    }
 }
 
 /* ---------- commands + prompt ---------- */
@@ -492,6 +500,20 @@ summary:hover { color: var(--link); }
 }
 .tbc.show { transform: none; }
 
+/* "now" card under the model */
+.now {
+    padding: 10px 12px 12px;
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    background: var(--panel-soft);
+    font-size: 12px;
+}
+.now-head { color: var(--faint); margin-bottom: 6px; }
+.now-head .arrow { color: var(--green); font-weight: 700; }
+.now-row { display: grid; grid-template-columns: 11ch minmax(0, 1fr); gap: 8px; padding: 3px 0; }
+.now-k { color: var(--faint); white-space: nowrap; }
+.now-row > span:last-child { font-family: var(--sans); font-size: 13.5px; color: var(--ink); }
+
 /* ---------- tmux status bar ---------- */
 .statusbar {
     position: fixed;
@@ -665,7 +687,7 @@ summary:hover { color: var(--link); }
 
 /* ---------- small screens ---------- */
 @media (max-width: 1079px) {
-    .train { width: 100%; max-width: 360px; margin: 0 auto 44px; }
+    .side-col { width: 100%; max-width: 360px; margin: 0 auto 44px; }
 }
 
 @media (max-width: 600px) {
