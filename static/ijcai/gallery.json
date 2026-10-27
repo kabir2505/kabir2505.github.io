@@ -1,0 +1,257 @@
+[
+ {
+  "type": "video",
+  "src": "static/ijcai/video/charles-bridge-video.mp4",
+  "thumb": "static/ijcai/thumb/charles-bridge-video.webp",
+  "poster": "static/ijcai/full/charles-bridge-video.webp",
+  "w": 1280,
+  "h": 720,
+  "caption": "Charles Bridge, Prague",
+  "group": "trip",
+  "featured": true
+ },
+ {
+  "type": "video",
+  "src": "static/ijcai/video/strahov-monastery-brewery.mp4",
+  "thumb": "static/ijcai/thumb/strahov-monastery-brewery.webp",
+  "poster": "static/ijcai/full/strahov-monastery-brewery.webp",
+  "w": 1280,
+  "h": 720,
+  "caption": "Strahov Monastery Brewery, Prague",
+  "group": "trip",
+  "featured": false
+ },
+ {
+  "type": "video",
+  "src": "static/ijcai/video/atop-berlin-cathedral.mp4",
+  "thumb": "static/ijcai/thumb/atop-berlin-cathedral.webp",
+  "poster": "static/ijcai/full/atop-berlin-cathedral.webp",
+  "w": 1280,
+  "h": 720,
+  "caption": "Atop the Berlin Cathedral",
+  "group": "trip",
+  "featured": false
+ },
+ {
+  "type": "video",
+  "src": "static/ijcai/video/dresden-biking-ts.mp4",
+  "thumb": "static/ijcai/thumb/dresden-biking-ts.webp",
+  "poster": "static/ijcai/full/dresden-biking-ts.webp",
+  "w": 720,
+  "h": 1280,
+  "caption": "Biking in Dresden",
+  "group": "trip",
+  "featured": false
+ },
+ {
+  "type": "video",
+  "src": "static/ijcai/video/moritzberg-video.mp4",
+  "thumb": "static/ijcai/thumb/moritzberg-video.webp",
+  "poster": "static/ijcai/full/moritzberg-video.webp",
+  "w": 1280,
+  "h": 720,
+  "caption": "Moritzburg Castle, near Dresden",
+  "group": "trip",
+  "featured": false
+ },
+ {
+  "type": "image",
+  "thumb": "static/ijcai/thumb/moritzburg.webp",
+  "full": "static/ijcai/full/moritzburg.webp",
+  "w": 1600,
+  "h": 900,
+  "caption": "Moritzburg Castle, near Dresden",
+  "group": "trip",
+  "featured": false
+ },
+ {
+  "type": "image",
+  "thumb": "static/ijcai/thumb/berlin-bradenburg-area.webp",
+  "full": "static/ijcai/full/berlin-bradenburg-area.webp",
+  "w": 900,
+  "h": 1600,
+  "caption": "Brandenburg Gate area, Berlin",
+  "group": "trip",
+  "featured": false
+ },
+ {
+  "type": "image",
+  "thumb": "static/ijcai/thumb/berlin-cathedral.webp",
+  "full": "static/ijcai/full/berlin-cathedral.webp",
+  "w": 1600,
+  "h": 900,
+  "caption": "Berlin Cathedral",
+  "group": "trip",
+  "featured": false
+ },
+ {
+  "type": "image",
+  "thumb": "static/ijcai/thumb/bremen-walk.webp",
+  "full": "static/ijcai/full/bremen-walk.webp",
+  "w": 900,
+  "h": 1600,
+  "caption": "A walk through Bremen",
+  "group": "trip",
+  "featured": false
+ },
+ {
+  "type": "image",
+  "thumb": "static/ijcai/thumb/bremen.webp",
+  "full": "static/ijcai/full/bremen.webp",
+  "w": 900,
+  "h": 1600,
+  "caption": "Bremen",
+  "group": "trip",
+  "featured": false
+ },
+ {
+  "type": "image",
+  "thumb": "static/ijcai/thumb/ijcai-banquet-weser-stadium.webp",
+  "full": "static/ijcai/full/ijcai-banquet-weser-stadium.webp",
+  "w": 1600,
+  "h": 900,
+  "caption": "IJCAI banquet at the Weserstadion, Bremen",
+  "group": "trip",
+  "featured": false
+ },
+ {
+  "type": "image",
+  "thumb": "static/ijcai/thumb/ijcai-div-inclusion-lunch.webp",
+  "full": "static/ijcai/full/ijcai-div-inclusion-lunch.webp",
+  "w": 1600,
+  "h": 900,
+  "caption": "IJCAI Diversity & Inclusion lunch",
+  "group": "trip",
+  "featured": false
+ },
+ {
+  "type": "image",
+  "thumb": "static/ijcai/thumb/ijcai-run.webp",
+  "full": "static/ijcai/full/ijcai-run.webp",
+  "w": 1600,
+  "h": 900,
+  "caption": "IJCAI run",
+  "group": "trip",
+  "featured": false
+ },
+ {
+  "type": "image",
+  "thumb": "static/ijcai/thumb/ijcai-student-reception.webp",
+  "full": "static/ijcai/full/ijcai-student-reception.webp",
+  "w": 1600,
+  "h": 900,
+  "caption": "IJCAI student reception",
+  "group": "trip",
+  "featured": false
+ },
+ {
+  "type": "image",
+  "thumb": "static/ijcai/thumb/late-nigh-bremen-schnoor-quarter-walk-with-ai-for-healthcare-folks.webp",
+  "full": "static/ijcai/full/late-nigh-bremen-schnoor-quarter-walk-with-ai-for-healthcare-folks.webp",
+  "w": 1600,
+  "h": 900,
+  "caption": "Late-night walk through Bremen’s Schnoor quarter with the AI for Healthcare folks",
+  "group": "trip",
+  "featured": false
+ },
+ {
+  "type": "image",
+  "thumb": "static/ijcai/thumb/strahov-monastery-brewery-2.webp",
+  "full": "static/ijcai/full/strahov-monastery-brewery-2.webp",
+  "w": 900,
+  "h": 1600,
+  "caption": "Strahov Monastery Brewery, Prague",
+  "group": "trip",
+  "featured": false
+ },
+ {
+  "type": "image",
+  "thumb": "static/ijcai/thumb/food-pxl-20260820-180856068.webp",
+  "full": "static/ijcai/full/food-pxl-20260820-180856068.webp",
+  "w": 900,
+  "h": 1600,
+  "caption": "",
+  "group": "food",
+  "featured": false
+ },
+ {
+  "type": "image",
+  "thumb": "static/ijcai/thumb/food-biryani-berlin.webp",
+  "full": "static/ijcai/full/food-biryani-berlin.webp",
+  "w": 900,
+  "h": 1600,
+  "caption": "Biryani in Berlin",
+  "group": "food",
+  "featured": false
+ },
+ {
+  "type": "image",
+  "thumb": "static/ijcai/thumb/food-budha-s-bowl-ma-bremen-schlata.webp",
+  "full": "static/ijcai/full/food-budha-s-bowl-ma-bremen-schlata.webp",
+  "w": 1600,
+  "h": 900,
+  "caption": "Buddha bowl at MA, Schlachte, Bremen",
+  "group": "food",
+  "featured": false
+ },
+ {
+  "type": "image",
+  "thumb": "static/ijcai/thumb/food-dresden-vietnamese-2.webp",
+  "full": "static/ijcai/full/food-dresden-vietnamese-2.webp",
+  "w": 1600,
+  "h": 900,
+  "caption": "Vietnamese food in Dresden",
+  "group": "food",
+  "featured": false
+ },
+ {
+  "type": "image",
+  "thumb": "static/ijcai/thumb/food-dresden-vietnamese.webp",
+  "full": "static/ijcai/full/food-dresden-vietnamese.webp",
+  "w": 1600,
+  "h": 900,
+  "caption": "Vietnamese food in Dresden",
+  "group": "food",
+  "featured": false
+ },
+ {
+  "type": "image",
+  "thumb": "static/ijcai/thumb/food-ijcai-div-inclusion-ice-cream.webp",
+  "full": "static/ijcai/full/food-ijcai-div-inclusion-ice-cream.webp",
+  "w": 900,
+  "h": 1600,
+  "caption": "Ice cream at the IJCAI Diversity & Inclusion lunch",
+  "group": "food",
+  "featured": false
+ },
+ {
+  "type": "image",
+  "thumb": "static/ijcai/thumb/food-ijcai-div-and-inclusion-main-course.webp",
+  "full": "static/ijcai/full/food-ijcai-div-and-inclusion-main-course.webp",
+  "w": 1600,
+  "h": 900,
+  "caption": "Main course at the IJCAI Diversity & Inclusion lunch",
+  "group": "food",
+  "featured": false
+ },
+ {
+  "type": "image",
+  "thumb": "static/ijcai/thumb/food-italian-margarita-pizza.webp",
+  "full": "static/ijcai/full/food-italian-margarita-pizza.webp",
+  "w": 1600,
+  "h": 900,
+  "caption": "Italian Margherita pizza",
+  "group": "food",
+  "featured": false
+ },
+ {
+  "type": "image",
+  "thumb": "static/ijcai/thumb/food-monster-ruby-red.webp",
+  "full": "static/ijcai/full/food-monster-ruby-red.webp",
+  "w": 900,
+  "h": 1600,
+  "caption": "Monster Ultra Fantasy Ruby Red",
+  "group": "food",
+  "featured": false
+ }
+]

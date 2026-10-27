@@ -4,180 +4,314 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="static/icon_1.png">
-    <title class="section_heading">Kabir J</title>
+    <title>Kabir J</title>
+    <meta name="description" content="Kabir Jamadar — research on interpretability, self-supervised learning, embeddings and multimodal LLMs.">
+    <script>
+        try { var t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
     <link rel="stylesheet" href="styles.css">
-    <style>
-     
-    </style>
 </head>
 <body>
-    <h1 class="section_heading" style="text-align: center;">Hi, I'm Kabir J.</h1>
-    <div id="refs" style="text-align: center;">
-        <a href="https://github.com/kabir2505">Github</a>
-        <a href="https://www.linkedin.com/in/kabir-jamadar-31b679249/">Linkedin</a>
-        <a href="https://twitter.com/kabir_j25">Twitter</a>
-        <a href="https://www.goodreads.com/user/show/187910952-kabir">Goodreads</a>
+    <header class="topbar mono">
+        <a class="run" href="#live" title="A neural network is training live in your browser — click to watch">
+            <span class="run-dot" aria-hidden="true"></span>
+            <span class="faint">run/</span><b>kabir-jamadar</b>
+            <span class="pill" data-status>training</span>
+            <span class="faint live-note">live in your browser · step <span data-step>0</span></span>
+        </a>
+        <nav class="topnav">
+            <a class="trip-pill" href="trip.html">📸 IJCAI '26 trip</a>
+            <button id="theme-toggle" class="icon-btn" type="button" aria-label="Toggle dark mode">◐</button>
+        </nav>
+    </header>
+
+    <div class="page">
+        <aside class="sidebar">
+            <div class="idcard">
+                <img class="avatar" src="static/avatar.jpg" alt="Kabir's avatar" width="64" height="64">
+                <div class="name">Kabir Jamadar</div>
+                <div class="role">Research Intern @ Microsoft Research · Data Science @ IIT Madras</div>
+                <div class="chip-links">
+                    <a href="https://github.com/kabir2505">github</a>
+                    <a href="https://twitter.com/kabir_j25">twitter</a>
+                    <a href="https://www.linkedin.com/in/kabir-jamadar-31b679249/">linkedin</a>
+                    <a href="https://www.goodreads.com/user/show/187910952-kabir">goodreads</a>
+                    <a href="mailto:kabir25.dl@gmail.com">email</a>
+                </div>
+            </div>
+
+            <a class="trip-card" href="trip.html">
+                <img src="static/ijcai/thumb/charles-bridge-video.webp" alt="" width="640" height="360" loading="lazy">
+                <span class="trip-card-text"><b>IJCAI-ECAI '26 trip</b><span class="faint">Bremen, Prague, Dresden, Berlin — photos &amp; videos →</span></span>
+            </a>
+
+            <nav class="toc" aria-label="Index">
+                <div class="side-head">Index</div>
+                <a class="toc-item" href="#about"><span class="n">01</span>About</a>
+                <a class="toc-item" href="#interests"><span class="n">02</span>Research interests</a>
+                <a class="toc-item" href="#experience"><span class="n">03</span>Experience</a>
+                <a class="toc-item" href="#education"><span class="n">04</span>Education</a>
+                <a class="toc-item" href="#publications"><span class="n">05</span>Publications</a>
+                <a class="toc-item" href="#projects"><span class="n">06</span>Projects</a>
+                <a class="toc-item" href="#papers"><span class="n">07</span>Papers I love</a>
+                <a class="toc-item" href="#misc"><span class="n">08</span>Misc</a>
+                <a class="toc-item" href="#contact"><span class="n">09</span>Contact</a>
+            </nav>
+
+            <div class="idcard reading">
+                <div class="label">📖 Recently read</div>
+                <div class="book"><a href="https://www.goodreads.com/search?q=East+of+Eden+Steinbeck">East of Eden</a> <span class="faint">— John Steinbeck</span></div>
+                <div class="book"><a href="https://www.goodreads.com/search?q=Into+Thin+Air+Krakauer">Into Thin Air</a> <span class="faint">— Jon Krakauer</span></div>
+            </div>
+        </aside>
+
+        <section id="about" class="about">
+            <h1>Hi, I'm Kabir J.</h1>
+            <p class="lede">I'm a Research Intern at <b>Microsoft Research</b>, working on embeddings, and a Data Science student at IIT Madras.</p>
+            <p>Before this, I worked on interpretability in multimodal LLMs at <a href="https://precog.iiit.ac.in/">Precog, IIIT Hyderabad</a> with
+                Prof. Ponnurangam Kumaraguru, and on self-supervised learning for 3D medical imaging at VISTA Lab, IISc Bangalore, which became an
+                IJCAI-ECAI 2026 paper.</p>
+            <p>Broadly, I want to understand how models think, reason and fail, and how they can be improved. That draws me to interpretability,
+                alignment, pretraining, self-supervised learning and grounding in multimodal models. I like learning methods by building them from scratch,
+                which is how this page ended up with a neural network training on it.</p>
+        </section>
+
+        <aside id="live" class="live" aria-labelledby="live-h">
+            <div class="live-head mono">
+                <span class="live-dot" aria-hidden="true"></span>
+                <span id="live-h">live · training in your browser</span>
+                <span class="pill" data-status>training</span>
+            </div>
+            <div class="live-body">
+                <div class="canvas-wrap">
+                    <canvas id="ssl-canvas" role="img" aria-label="A small neural network training live with a contrastive loss; points cluster around a circle into a Vegvísir-like compass."></canvas>
+                    <div id="ssl-tip" class="tip mono" hidden></div>
+                </div>
+                <div class="live-side mono">
+                    <dl class="live-stats">
+                        <dt>step</dt><dd id="m-step">0</dd>
+                        <dt>InfoNCE</dt><dd id="m-loss">—</dd>
+                        <dt>align</dt><dd id="m-align">—</dd>
+                        <dt>uniform</dt><dd id="m-unif">—</dd>
+                    </dl>
+                    <canvas id="ssl-spark" aria-hidden="true"></canvas>
+                    <div class="live-controls">
+                        <label class="slider"><span>temperature τ <b id="m-tau">0.20</b></span>
+                            <input id="ssl-tau" type="range" min="0.08" max="0.5" step="0.01" value="0.2"></label>
+                        <button id="ssl-reinit" class="btn" type="button">↻ re-init weights</button>
+                    </div>
+                </div>
+            </div>
+            <p class="caption">A 16→32→2 MLP learning with a contrastive (SimCLR) loss on unlabeled points, right now, on your CPU.
+                It never sees the colors; they're hidden concepts shown only to you. Once it converges, the clusters draw a Vinland Saga
+                Vegvísir. Hover a point to see its two augmented views.</p>
+        </aside>
+
+        <main class="content">
+            <section id="interests">
+                <h2><span class="n">02</span>Research interests</h2>
+                <div class="dict interests">
+                    <div class="row">
+                        <div class="key">interpretability</div>
+                        <div class="text">Understanding what models represent internally and why they behave the way they do: features, circuits, and how they fail.</div>
+                    </div>
+                    <div class="row">
+                        <div class="key">alignment</div>
+                        <div class="text">Making models reliably do what we intend, and noticing early when they don't.</div>
+                    </div>
+                    <div class="row">
+                        <div class="key">pretraining</div>
+                        <div class="text">How data and objectives during pretraining shape the capabilities and representations of LLMs and MLLMs.</div>
+                    </div>
+                    <div class="row">
+                        <div class="key">self-supervised learning</div>
+                        <div class="text">Learning useful representations from unlabeled data, like the contrastive model training on this page.</div>
+                    </div>
+                    <div class="row">
+                        <div class="key">grounding</div>
+                        <div class="text">How multimodal models tie language to what is actually in an image, and what they rely on when they talk about it.</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="experience">
+                <h2><span class="n">03</span>Experience</h2>
+                <div class="list-box">
+                    <article class="item">
+                        <div class="when mono">now</div>
+                        <div>
+                            <h3>Research Intern · Microsoft Research</h3>
+                            <p class="sub">6-month internship working on embeddings.</p>
+                        </div>
+                    </article>
+                    <article class="item">
+                        <div class="when mono">Jan 2026 –<br>Jul 2026</div>
+                        <div>
+                            <h3>Research Intern · <a href="https://precog.iiit.ac.in/">Precog, IIIT Hyderabad</a></h3>
+                            <p class="sub">With <a href="https://scholar.google.com/citations?user=MfzQyP8AAAAJ&hl=en">Prof. Ponnurangam Kumaraguru</a>. Worked on interpretability in Multimodal Large Language Models (MLLMs).</p>
+                        </div>
+                    </article>
+                    <article class="item">
+                        <div class="when mono">Sep 2025 –<br>Jan 2026</div>
+                        <div>
+                            <h3>Research Intern · VISTA Lab, IISc Bangalore</h3>
+                            <p class="sub">With Prof. Punit Rathore. Worked on self-supervised learning for 3D medical imaging, which led to our IJCAI-ECAI 2026 paper.</p>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <section id="education">
+                <h2><span class="n">04</span>Education</h2>
+                <div class="list-box">
+                    <article class="item">
+                        <div class="when mono">Sep 2022 –<br>present</div>
+                        <div>
+                            <h3>Data Science · IIT Madras</h3>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <section id="publications">
+                <h2><span class="n">05</span>Publications</h2>
+                <div class="list-box">
+                    <article class="item">
+                        <div class="when mono">2026</div>
+                        <div>
+                            <h3>Two-Fold Patch Perturbation for Efficient Self-Supervised Learning in 3D Medical Imaging</h3>
+                            <p class="sub">Tirthajit Baruah*, <span class="me">Kabir Jamadar</span>, Punit Rathore</p>
+                            <p class="sub"><a href="https://2026.ijcai.org/">IJCAI-ECAI 2026</a> — The 35th International Joint Conference on Artificial Intelligence <span class="badge">accepted</span></p>
+                            <p class="sub faint">VISTA Lab, Indian Institute of Science, Bangalore</p>
+                            <p class="sub"><a href="trip.html">📸 photos &amp; videos from the conference trip →</a></p>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+
+            <section id="projects">
+                <h2><span class="n">06</span>Projects</h2>
+                <div class="list-box">
+                    <article class="item proj">
+                        <div class="entry-head"><a href="https://github.com/kabir2505/tiny-mixtral">Tiny-Mixtral 175M MoE</a><span class="tags mono">moe · gqa · kv-cache</span></div>
+                        <p>A simplified re-implementation of the <b>Mixtral of Experts (MoE)</b> architecture.</p>
+                        <details>
+                            <summary class="mono">details</summary>
+                            <dl class="kv">
+                                <dt>core</dt><dd>MoE, GQA, KV Caching, Sliding Window Attention, Rolling Buffer KV Cache</dd>
+                                <dt>dataset</dt><dd><a href="https://huggingface.co/datasets/tiny_stories">TinyStories</a></dd>
+                                <dt>hardware</dt><dd>NVIDIA Tesla P100, Kaggle Notebooks</dd>
+                                <dt>paper</dt><dd><a href="https://arxiv.org/abs/2401.04088">Mixtral of Experts</a></dd>
+                            </dl>
+                        </details>
+                    </article>
+                    <article class="item proj">
+                        <div class="entry-head"><a href="https://github.com/kabir2505/Deep-Learning-History">Deep-Learning-History</a><span class="tags mono">numpy · pytorch</span></div>
+                        <p>A personal deep dive into 18+ foundational and cutting-edge deep learning papers, implemented from scratch in <i>NumPy</i> and <i>PyTorch</i>. The goal: build intuition by understanding the "why" behind each method—not just the code.</p>
+                        <details>
+                            <summary class="mono">details</summary>
+                            <dl class="kv">
+                                <dt>foundations</dt><dd>LeNet, AlexNet</dd>
+                                <dt>sequence</dt><dd>RNNs, LSTMs, word2vec, GloVe, Encoder-Decoder</dd>
+                                <dt>transformers</dt><dd>BERT, GPT-1/2, LLaMA-2, Mixtral</dd>
+                                <dt>generative</dt><dd>GANs, DCGANs, WGANs</dd>
+                                <dt>vision</dt><dd>Vision Transformers</dd>
+                                <dt>focus</dt><dd>Fine-tuning (LoRA, GPT-2), Multilingual NMT, Evaluation Metrics (BLEU, Classification)</dd>
+                            </dl>
+                        </details>
+                    </article>
+                    <article class="item proj">
+                        <div class="entry-head"><a href="https://github.com/kabir2505/funniest-joke-with-LLMs">funniest-joke-with-LLMs</a><span class="tags mono">llm-judge · faiss</span></div>
+                        <p>Can LLMs be funny on purpose? This project explores controlled joke generation using Plan-Search, and ranks results via LLM judges with diverse humor styles.</p>
+                        <details>
+                            <summary class="mono">details</summary>
+                            <dl class="kv">
+                                <dt>modules</dt><dd>Joke Generation via Plan &amp; Search, LLM-as-Judge with 7+ humor personas, Novelty Detection using FAISS &amp; POS patterns</dd>
+                                <dt>focus</dt><dd>Incongruity modeling, Subjective humor evaluation, Creative alignment in LLMs</dd>
+                            </dl>
+                        </details>
+                    </article>
+                    <article class="item proj">
+                        <div class="entry-head"><a href="https://github.com/kabir2505/MangaKensaku">MangaKensaku</a><span class="tags mono">clip · faiss · fastapi</span></div>
+                        <p>A FastAPI-based app that retrieves the most relevant manga panels using natural language queries. Built to explore how FAISS performs similarity search on CLIP-based image embeddings.</p>
+                        <details>
+                            <summary class="mono">details</summary>
+                            <dl class="kv">
+                                <dt>features</dt><dd>CLIP-based embeddings, FAISS similarity search (IndexFlatIP), Semantic image search, Multimodal retrieval (text-image), Efficient ANN using FAISS</dd>
+                            </dl>
+                        </details>
+                    </article>
+                    <article class="item proj">
+                        <div class="entry-head"><a href="https://github.com/kabir2505/Prediction_of_Bank_Telemarketing">Bank Telemarketing Success Prediction</a><span class="tags mono">kaggle · top 25</span></div>
+                        <p>Ranked Top 25 out of 1,200+ participants in a Kaggle competition to predict client subscription to term deposits based on telemarketing campaign data.</p>
+                        <details>
+                            <summary class="mono">details</summary>
+                            <dl class="kv">
+                                <dt>eda</dt><dd>Uncovered trends, patterns, and relationships within the data</dd>
+                                <dt>preprocessing</dt><dd>Handled missing values, outliers, and applied feature scaling</dd>
+                                <dt>modeling</dt><dd>Logistic Regression, SVM, Random Forest, XGBoost</dd>
+                                <dt>optimization</dt><dd>Cross-validation and hyperparameter tuning to boost performance</dd>
+                            </dl>
+                        </details>
+                    </article>
+                </div>
+            </section>
+
+            <section id="papers">
+                <h2><span class="n">07</span>Papers I love</h2>
+                <ol class="refs">
+                    <li><a href="https://arxiv.org/abs/1301.3781">Efficient Estimation of Word Representations in Vector Space</a></li>
+                    <li><a href="https://arxiv.org/abs/2602.10067">Features as Rewards: Scalable Supervision for Open-Ended Tasks via Interpretability (RLFR)</a></li>
+                    <li><a href="https://arxiv.org/abs/2502.17424">Emergent Misalignment</a></li>
+                    <li><a href="https://arxiv.org/abs/2507.14805">Subliminal Learning</a></li>
+                    <li><a href="https://arxiv.org/abs/2404.05961">LLM2Vec</a></li>
+                    <li><a href="https://arxiv.org/abs/2501.04001">Sa2VA: Marrying SAM2 with LLaVA for Dense Grounded Understanding of Images and Videos</a></li>
+                </ol>
+            </section>
+
+            <section id="misc">
+                <h2><span class="n">08</span>Misc</h2>
+                <div class="dict">
+                    <div class="row">
+                        <div class="key">notes</div>
+                        <div class="text">Some older <a href="https://kabir25.notion.site/Notes-Blogs-1953fc08703280e48025f01d853e26c6">ML notes &amp; paper summaries</a>.</div>
+                    </div>
+                    <div class="row">
+                        <div class="key">books</div>
+                        <div class="text">I love reading. Recently: <i>East of Eden</i> (read during my time at IISc Bangalore) and <i>Into Thin Air</i>.</div>
+                    </div>
+                    <div class="row">
+                        <div class="key">guitar</div>
+                        <div class="text">Learning the electric guitar. I love the <i>blues</i> — <a href="https://www.instagram.com/reel/DBQVX_gOtk9/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==">cover of Lenny by SRV</a>.</div>
+                    </div>
+                    <div class="row">
+                        <div class="key">anime</div>
+                        <div class="text">Vinland Saga — hence the Vegvísir the model draws above.</div>
+                    </div>
+                    <div class="row">
+                        <div class="key">fitness</div>
+                        <div class="text">Running &amp; hitting the gym.</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="contact">
+                <h2><span class="n">09</span>Contact</h2>
+                <p>Reach out to work on projects and collaborate on ML research — <a href="mailto:kabir25.dl@gmail.com">kabir25.dl@gmail.com</a>.</p>
+            </section>
+
+            <footer class="foot mono">
+                <span class="faint">trained live in your browser · no GPUs were harmed</span>
+                <div class="res"><a href="https://kabir25.notion.site/Res-1eb3fc08703280a988e2df082a443e1c?pvs=4">Res</a></div>
+            </footer>
+        </main>
     </div>
-    <br>
-    <div>
-        Data Science Student and Student Researcher.
-        <br>
-        <br>
-        My broader interests lie in <b>interpretability, alignment, SSL techniques, pretraining in LLMs and MLLMs. </b>
-        I’m currently working on interpretability in Multimodal Large Language Models (MLLMs) and am curious about how models think, reason, fail, and can be improved.
 
-
-    </div>
-    <div>
-        <p> <h3 class="section_heading">Right now, I'm:</h3></p>
-        <ul>
-            <li>Resarching at <u class="highlight-underline"> <a href="https://precog.iiit.ac.in/">Precog, IIIT Hyderabad</a></u> with <a href="https://scholar.google.com/citations?user=MfzQyP8AAAAJ&hl=en">Prof. Ponnurangam Kumaraguru</a></li>
-            <li>Pinning down in-depth ML blogs & Paper summaries <a href="https://kabir25.notion.site/Notes-Blogs-1953fc08703280e48025f01d853e26c6"> Blogs</a></li>
-            <li>Studying Data Science @ <a href="#">IIT Madras</a>.</li>
-        </ul>
-    </div>
-
-   <p>
-  <i>Reach out to work on projects and collaborate on ML research — <a href="mailto:kabir25.dl@gmail.com">email me</a> </i>
-</p>
-    
-<h1 class="section_heading">Publications</h1>
-<ul>
-  <li>
-    <b>Two-Fold Patch Perturbation for Efficient Self-Supervised Learning in 3D Medical Imaging</b>
-    <p>
-      Tirthajit Baruah*, <u class="highlight-underline"><b>Kabir Jamadar</b></u>, Punit Rathore &nbsp;·&nbsp; <i>Indian Institute of Science, Bangalore</i><br>
-      <!-- <i>Equal contribution</i><br> -->
-      Accepted at <a href="https://2026.ijcai.org/">IJCAI-ECAI 2026</a> — The 35th International Joint Conference on Artificial Intelligence
-    </p>
-  </li>
-</ul>
-
-    <h1 class="section_heading">Projects</h1>
-    
-    <div class="Projects">
-        <ul>
-
-   <li>
-    <a href="https://github.com/kabir2505/tiny-mixtral">Tiny-Mixtral 175M MoE</a>
-    <p>
-        A simplified re-implementation of the <b> <u class="highlight-underline">**Mixtral of Experts (MoE)**</u></b> architecture. <br>   <u>Core Concepts:</u><br>
-    MoE, GQA, KV Caching, Sliding Window Attention, Rolling Buffer KV Cache.<br><br>
-
-    <u>Training:</u><br>
-    <b>Dataset:</b> <a href="https://huggingface.co/datasets/tiny_stories">TinyStories</a><br>
-    <b>Hardware:</b> NVIDIA Tesla P100, Kaggle Notebooks<br><br>
-
-    <u>Paper:</u><br>
-    <a href="https://arxiv.org/abs/2401.04088">Mixtral of Experts</a>
-</li>
-
-<br>
-
-    <li>
-        <a href="https://github.com/kabir2505/Deep-Learning-History">Deep-Learning-History</a>
-        <p>
-        A personal deep dive into 18+ foundational and cutting-edge deep learning papers, implemented <a href="#">from scratch</a> in <i>NumPy</i> and <i>PyTorch</i>. The goal: build intuition by understanding the "why" behind each method—not just the code.
-        </p>
-        <u>Key Implementations:</u><br>
-        <b>Foundations:</b> LeNet, AlexNet<br>
-        <b>Sequence Models:</b> RNNs, LSTMs, word2vec, GloVe, Encoder-Decoder<br>
-        <b>Transformers:</b> BERT, GPT-1/2, LLaMA-2, Mixtral<br>
-        <b>Generative Models:</b> GANs, DCGANs, WGANs<br>
-        <b>Vision:</b> Vision Transformers<br><br>
-
-        <u>Focus Areas:</u><br>
-        Fine-tuning (LoRA, GPT-2)<br>
-        Multilingual NMT<br>
-        Evaluation Metrics (BLEU, Classification)
-    </li>
-   <br>
-  <li>
-    <a href="https://github.com/kabir2505/Prediction_of_Bank_Telemarketing">Bank Telemarketing Success Prediction</a>
-    <p>
-      Ranked Top 25 out of 1,200+ participants in a Kaggle competition to predict client subscription to term deposits based on telemarketing campaign data.
-    </p>
-
-    <u>Key Contributions:</u><br>
-    <b>EDA:</b> Uncovered trends, patterns, and relationships within the data<br>
-    <b>Preprocessing:</b> Handled missing values, outliers, and applied feature scaling<br>
-    <b>Modeling:</b> Logistic Regression, SVM, Random Forest, XGBoost<br>
-    <b>Optimization:</b> Cross-validation and hyperparameter tuning to boost performance<br><br>
-
-  </li>
-
-  <li>
-    <a href="https://github.com/kabir2505/funniest-joke-with-LLMs">funniest-joke-with-LLMs</a>
-    <p>
-      Can LLMs be funny on purpose? This project explores controlled joke generation using Plan-Search, and ranks results via LLM judges with diverse humor styles.
-    </p>
-  
-    <u>Key Modules:</u><br>
-    Joke Generation via Plan & Search<br>
-    LLM-as-Judge with 7+ humor personas<br>
-    Novelty Detection using FAISS & POS patterns<br><br>
-  
-    <u>Focus Areas:</u><br>
-    Incongruity modeling<br>
-    Subjective humor evaluation<br>
-    Creative alignment in LLMs
-  </li>
-
-  <li>
-    <a href="https://github.com/kabir2505/MangaKensaku">Mangakensaku</a>
-    <p>
-      A FastAPI-based app that retrieves the most relevant manga panels using natural language queries. Built to explore how FAISS performs similarity search on CLIP-based image embeddings.
-    </p>
-    <u>Key Features:</u><br>
-    CLIP-based embeddings<br>
-    FAISS similarity search (IndexFlatIP)<br>
-    Semantic image search<br>
-    Multimodal retrieval (text-image)<br>
-    Efficient ANN using FAISS
-  </li>
-  
-
-
-
-
-
-    </ul>
-
-        
-
-
-
-
-    
-       
-    </div>
-    
-    <div class="Interests">
-        <h1 class="section_heading">Works/Papers I Love & Admire</h1>
-        <ul>
-            <li><a href="https://arxiv.org/abs/1301.3781">Efficient Estimation of Word Representations in Vector Space</a></li>
-            #<li><a href="https://arxiv.org/abs/2602.10067">Features as Rewards: Scalable Supervision for Open-Ended Tasks via Interpretability(RLFR)</a></li>
-            <li><a href="https://arxiv.org/abs/2502.17424">Emergent Misalignment</a></li>
-            <li><a href="https://arxiv.org/abs/2507.14805">Subliminal Learning</a></li>
-            <li><a href="https://arxiv.org/abs/2404.05961">LLM2Vec</a></li>
-            <li><a href="https://arxiv.org/abs/2404.05961">Sa2va: Marrying SAM2 with LLaVA for Dense Grounded Understanding of Images and Videos</a></li>
-
-        </ul>
-    </div>
-    <div>
-        <h1 class="section_heading" style="text-align:center">Other/Fun</h1>
-        <ul>
-            <li>I love reading books. Currently Reading: <a href="https://www.goodreads.com/book/show/6162.All_the_Pretty_Horses"> All the Pretty Horses</a></li>
-            <li>Learning the electric guitar. I love the <i>blues</i>. <a href="https://www.instagram.com/reel/DBQVX_gOtk9/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA=="> Cover of Lenny by SRV</a></li>
-            <li>Running & Hitting the gym.</li>
-        </ul>
-
-    
-    </div>
-    <div class="res" style="text-align: center;">
-       <a href="https://kabir25.notion.site/Res-1eb3fc08703280a988e2df082a443e1c?pvs=4"> Res</a>
-
-    </div>
+    <script src="ssl.js"></script>
+    <script src="script.js"></script>
 </body>
-<script src="script.js"></script>
 </html>

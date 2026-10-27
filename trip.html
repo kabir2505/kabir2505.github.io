@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="static/icon_1.png">
+    <title>IJCAI '26 Trip · Kabir J</title>
+    <meta name="description" content="Photos and videos from Kabir's IJCAI-ECAI 2026 trip: Bremen, Prague, Dresden, Berlin and Moritzburg.">
+    <script>
+        try { var t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="topbar mono">
+        <a class="run" href="index.html">
+            <span class="faint">←</span>
+            <span class="faint">run/</span><b>kabir-jamadar</b>
+        </a>
+        <nav class="topnav">
+            <a href="index.html">home</a>
+            <button id="theme-toggle" class="icon-btn" type="button" aria-label="Toggle dark mode">◐</button>
+        </nav>
+    </header>
+
+    <main class="solo">
+        <h1>IJCAI-ECAI '26 trip</h1>
+        <p class="lede">Bremen for IJCAI-ECAI 2026 and our paper on self-supervised learning for 3D medical imaging,
+            with detours through Prague, Dresden, Berlin and Moritzburg.</p>
+        <div id="gallery" class="gallery"><p class="g-status mono faint">loading photos…</p></div>
+        <footer class="foot mono">
+            <a href="index.html">← back to the main page</a>
+        </footer>
+    </main>
+
+    <script src="script.js"></script>
+    <script src="gallery.js" defer></script>
+</body>
+</html>
