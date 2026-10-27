@@ -161,6 +161,7 @@ b { font-weight: 700; }
 .session { grid-area: a; min-width: 0; padding-top: 36px; }
 .session-b { grid-area: b; padding-top: 0; padding-bottom: 36px; }
 .side-col { grid-area: train; display: flex; flex-direction: column; gap: 16px; }
+.side-col > *, .train > * { flex-shrink: 0; }   /* when the column is taller than the window it scrolls; nothing gets squeezed */
 
 @media (min-width: 1080px) {
     .panes {
