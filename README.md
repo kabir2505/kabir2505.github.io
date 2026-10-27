@@ -16,9 +16,15 @@ Type a Stand's name into the **Try the terminal** box at the bottom of the page.
 | `king crimson` | ~300 training steps happen instantly; the time in between is erased | A crimson flash, and the points jump to where they'd be. The log shows `⏭ King Crimson — 300 steps erased` |
 | `made in heaven` | Training runs 8× faster for 6 seconds | Motion trails as points streak into place, then `▶ time flows normally` |
 | `bites the dust` / `killer queen` | The run plays backwards to step 0, then restarts from its exact original weights | A pink Killer Queen tint while rewinding, then `↺ back to step 0 — the same run begins again` |
+| `the hand` / `za hando` | Erases one hidden concept from the data; the remaining clusters re-spread to fill the gap (contrastive *uniformity*, live). Works down to 5 concepts | Erased points shrink away and the star redraws with fewer points. `✋ ZA HANDO! — a concept was erased from space` |
+| `crazy diamond` / `dora` | Restores the run to exactly how it was before the last Stand: weights, optimizer state, step, τ, erased concepts | A brief diamond tint. `💎 DORARARA — restored to step N (before King Crimson)` |
+| `echoes act 3` / `3 freeze` | Temperature τ drops to 0.08 for 8 seconds, so the clusters pull into tight, heavy knots | A green tint, with points drawn heavier. `⬇ 3 FREEZE! — τ 0.20 → 0.08` |
+| `emerald splash` / `hierophant green` | Augmentations hit 3× harder for 5 seconds; the loss spikes, then recovers (a live robustness demo) | An emerald tint with green shards around the ring. `💚 EMERALD SPLASH! — augmentations ×3` |
+
+**Heaven's Door:** hover any point in the training pane and it opens like a book, showing its raw 16-dimensional input (the one the model sees, with no label) and how close its two augmented views land.
 
 - Commands aren't case-sensitive, and hyphens work (`KING-CRIMSON`).
-- While time is already being bent, other Stands reply "time is already being manipulated…".
+- While a Stand is already active, others reply "time is already being manipulated…". Crazy Diamond can always step in to fix things.
 - `↻ reinit` cancels everything.
 - Visitors with reduced motion get the same results without the animation.
 

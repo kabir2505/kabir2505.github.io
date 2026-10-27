@@ -116,7 +116,9 @@ if (form) {
       '  trip               open the IJCAI-ECAI \'26 photos',
       '  theme              toggle light / dark',
       '  history, clear     the usual',
-      'time stands: za warudo · king crimson · made in heaven · bites the dust',
+      'stands:  za warudo · king crimson · made in heaven · bites the dust',
+      '         the hand · crazy diamond · echoes act 3 · emerald splash',
+      '         (and hover a point in the training pane: Heaven\'s Door)',
       '…and a few things you might try in a real terminal (or in a JoJo fight).',
     ].join('\n')),
     ls: () => {
@@ -220,8 +222,24 @@ if (form) {
     'made in heaven': a => (a.madeInHeaven() ? block('MADE IN HEAVEN! Time accelerates…', 'warn') : block(BUSY, 'dim')),
     'bites the dust': a => (a.bitesTheDust() ? block('KILLER QUEEN — BITES THE DUST! Rewinding to step 0…', 'warn') : block(BUSY, 'dim')),
   };
+  STANDS['the hand'] = a => {
+    const r = a.theHand();
+    if (r === 'busy') return block(BUSY, 'dim');
+    if (r === 'limit') return block('ZA HANDO… only 5 concepts left — erasing more would leave nothing to learn.', 'dim');
+    return block(`ZA HANDO! A whole concept has been erased from space. ${r} remain — watch the rest re-spread.`, 'warn');
+  };
+  STANDS['crazy diamond'] = a => {
+    const r = a.crazyDiamond();
+    return r ? block(`DORARARARA! Restored to how it was before ${r}.`, 'ok') : block('Crazy Diamond: nothing to fix (try another Stand first).', 'dim');
+  };
+  STANDS['echoes act 3'] = a => (a.echoes() ? block('3 FREEZE! Everything feels heavier… τ drops to 0.08 for 8 seconds.', 'warn') : block(BUSY, 'dim'));
+  STANDS['emerald splash'] = a => (a.emeraldSplash() ? block('EMERALD SPLASH! The augmentations hit three times harder for 5 seconds.', 'warn') : block(BUSY, 'dim'));
   STANDS['the world'] = STANDS['za warudo'];
   STANDS['killer queen'] = STANDS['bites the dust'];
+  STANDS['za hando'] = STANDS['the hand'];
+  STANDS['dora'] = STANDS['crazy diamond'];
+  STANDS['3 freeze'] = STANDS['echoes'] = STANDS['echoes act 3'];
+  STANDS['hierophant green'] = STANDS['emerald splash'];
   COMMANDS.vi = COMMANDS.nano = COMMANDS.vim;
   COMMANDS.top = COMMANDS.htop;
   COMMANDS.python3 = COMMANDS.python;

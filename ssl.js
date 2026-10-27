@@ -44,6 +44,13 @@
     const P = new Float64Array(NP), G = new Float64Array(NP);
     const M1 = new Float64Array(NP), M2 = new Float64Array(NP);
     const m = { step: 0, tau: 0.2, lr: 3e-3, X, Y, P, G, rand, gauss };
+    m.aug = { jitter: 0.3, mask: 0.25 };            // augmentation strength (Emerald Splash raises it)
+    m.active = new Uint8Array(N).fill(1);          // samples still in the data (The Hand erases concepts)
+    let pool = Array.from({ length: N }, (_, i) => i);
+    const refreshPool = () => { pool = []; for (let i = 0; i < N; i++) if (m.active[i]) pool.push(i); };
+    m.erase = (k) => { for (let i = 0; i < N; i++) if (Y[i] === k) m.active[i] = 0; refreshPool(); };
+    m.restoreAll = () => { m.active.fill(1); refreshPool(); };
+    m.concepts = () => { const seen = new Set(); for (let i = 0; i < N; i++) if (m.active[i]) seen.add(Y[i]); return [...seen]; };
 
     function init() {
       for (let j = 0; j < H * D; j++) P[oW1 + j] = gauss() * Math.sqrt(1 / D);
@@ -57,6 +64,14 @@
     m.init = init;
     m.getParams = () => Float64Array.from(P);
     m.setParams = (q) => { P.set(q); M1.fill(0); M2.fill(0); m.step = 0; };
+    // full training state, for Crazy Diamond's restore
+    m.saveState = () => ({ P: Float64Array.from(P), M1: Float64Array.from(M1), M2: Float64Array.from(M2),
+      step: m.step, tau: m.tau, aug: { ...m.aug }, active: Uint8Array.from(m.active) });
+    m.loadState = (st) => {
+      P.set(st.P); M1.set(st.M1); M2.set(st.M2);
+      m.step = st.step; m.tau = st.tau; m.aug = { ...st.aug };
+      m.active.set(st.active); refreshPool();
+    };
 
     // forward one input (x at xs[xo]) -> h at hs[ho], unit u at us[uo]; returns ||z||
     function forward(xs, xo, hs, ho, us, uo) {
@@ -79,9 +94,9 @@
 
     // two augmented views: random scale, jitter, feature masking
     function augment(i, dst, o) {
-      const s = 0.8 + 0.4 * rand();
+      const s = 0.8 + 0.4 * rand(), { jitter, mask } = m.aug;
       for (let d = 0; d < D; d++) {
-        dst[o + d] = rand() < 0.25 ? 0 : X[i * D + d] * s + 0.3 * gauss();
+        dst[o + d] = rand() < mask ? 0 : X[i * D + d] * s + jitter * gauss();
       }
     }
     m.augment = augment;
@@ -93,7 +108,7 @@
     // one NT-Xent step; views (2k, 2k+1) are a positive pair
     m.train = function () {
       for (let k = 0; k < B; k++) {
-        const i = (rand() * N) | 0;
+        const i = pool[(rand() * pool.length) | 0];
         augment(i, xs, 2 * k * D);
         augment(i, xs, (2 * k + 1) * D);
       }
@@ -183,23 +198,25 @@
     m.stats = function (E) {
       const cx = new Float64Array(K), cy = new Float64Array(K), cn = new Float64Array(K);
       for (let i = 0; i < N; i++) {
+        if (!m.active[i]) continue;
         cx[Y[i]] += E[2 * i]; cy[Y[i]] += E[2 * i + 1]; cn[Y[i]]++;
       }
       const cents = [];
       let tight = 0;
       for (let k = 0; k < K; k++) {
+        if (!cn[k]) continue;                      // concept erased
         const x = cx[k] / cn[k], y = cy[k] / cn[k];
-        const r = Math.hypot(x, y);
-        tight += r / K;
-        cents.push({ k, angle: Math.atan2(y, x), r });
+        cents.push({ k, angle: Math.atan2(y, x), r: Math.hypot(x, y) });
       }
+      const n = cents.length;
+      for (const c of cents) tight += c.r / n;
       const sorted = cents.map((c) => c.angle).sort((a, b) => a - b);
       let minGap = Infinity;
-      for (let k = 0; k < K; k++) {
-        const g = k === K - 1 ? sorted[0] + 2 * Math.PI - sorted[k] : sorted[k + 1] - sorted[k];
+      for (let k = 0; k < n; k++) {
+        const g = k === n - 1 ? sorted[0] + 2 * Math.PI - sorted[k] : sorted[k + 1] - sorted[k];
         if (g < minGap) minGap = g;
       }
-      const gap = minGap / ((2 * Math.PI) / K);
+      const gap = minGap / ((2 * Math.PI) / n);
       const ss = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
       return { cents, tight, gap, score: ss(0.7, 0.95, tight) * ss(0.2, 0.6, gap) };
     };
@@ -238,6 +255,10 @@
     let status = 'training', convergedAt = 0, frozenUntil = 0;
     let stopStart = -1e9, rippleUntil = 0, stopToken = 0;  // ZA WARUDO + Hamon effects
     let heavenUntil = 0, rewinding = null, P0 = null, trail = [];  // Made in Heaven, Bites the Dust
+    let echoesUntil = 0, echoesTau = 0.2, emeraldUntil = 0, fxToken = 0;  // Echoes Act 3, Emerald Splash
+    const erasedAt = {};                            // The Hand: concept -> when it was erased (for the fade)
+    let lastErase = -1e9, cp = null;                // cp: checkpoint taken before the last Stand (Crazy Diamond)
+    const AUG = { jitter: 0.3, mask: 0.25 };
     const wrap = hero.closest('.canvas-wrap');
     let stats = null, hover = null, dirty = true, frame = 0, raf = 0, heroVisible = true;
     let colors = {};
@@ -284,14 +305,23 @@
       lossEma = null; best = Infinity; stall = 0;
       log('↻ re-initializing weights…', 'warn');
       if (tbc) tbc.classList.remove('show');
-      stopToken++;                                     // cancel any pending time-stop callback
-      frozenUntil = 0; rippleUntil = 0; heavenUntil = 0;
-      if (rewinding) { clearInterval(rewinding.timer); rewinding = null; }
-      if (wrap) wrap.classList.remove('timestop', 'kingcrimson', 'bitesdust');
+      cancelEffects();
+      model.restoreAll();
+      for (const k in erasedAt) delete erasedAt[k];
       setStatus('training');
       model.embed(E);
       remember();
       // keep S as-is so the old structure visibly shatters into the new random init
+    }
+
+    // stop every running Stand effect (time-stop, rewind, Made in Heaven, Echoes, Emerald)
+    function cancelEffects() {
+      stopToken++; fxToken++;                          // pending timeouts become no-ops
+      frozenUntil = 0; rippleUntil = 0; heavenUntil = 0;
+      if (rewinding) { clearInterval(rewinding.timer); rewinding = null; }
+      if (echoesUntil) { model.tau = echoesTau; echoesUntil = 0; }
+      if (emeraldUntil) { model.aug = { ...AUG }; emeraldUntil = 0; }
+      if (wrap) wrap.classList.remove('timestop', 'kingcrimson', 'bitesdust', 'echoes', 'emerald', 'crazydiamond');
     }
 
     // the run's starting weights + a coarse trajectory of the embedding, for Bites the Dust
@@ -378,6 +408,7 @@
       const angles = stats.cents.map((ce) => ce.angle).sort((x, y) => x - y);
       const n = angles.length, r = R * 0.8;
       const pt = (i) => [cx + Math.cos(angles[i % n]) * r, cy - Math.sin(angles[i % n]) * r];
+      const step = starStep(n);                    // {8/3}, {7/3}, {5/2}… or a polygon
       const p = ease(a * 1.2) * n;                 // how many of the n edges are drawn so far
       c.save();
       c.strokeStyle = colors.ink;
@@ -388,7 +419,7 @@
       let [x0, y0] = pt(0);
       c.moveTo(x0, y0);
       for (let e = 0; e < Math.ceil(p); e++) {
-        const [x1, y1] = pt((e + 1) * 3);
+        const [x1, y1] = pt((e + 1) * step);
         const f = Math.min(1, p - e);
         c.lineTo(x0 + (x1 - x0) * f, y0 + (y1 - y0) * f);
         [x0, y0] = [x1, y1];
@@ -408,6 +439,12 @@
         c.fill();
       }
       c.restore();
+    }
+
+    const gcd = (a, b) => (b ? gcd(b, a % b) : a);
+    function starStep(n) {
+      for (let st = Math.floor((n - 1) / 2); st >= 2; st--) if (gcd(n, st) === 1) return st;
+      return 1;
     }
 
     // ゴゴゴ: menacing glyphs drifting around the ring while the model is still training
@@ -466,7 +503,21 @@
       c.restore();
     }
 
-    const effectsActive = (now) => !reduce && (now - stopStart < 900 || now < rippleUntil);
+    // Emerald Splash: green shards glinting around the ring
+    function drawEmerald(c, cx, cy, R) {
+      if (reduce || performance.now() >= emeraldUntil) return;
+      c.save();
+      c.fillStyle = '#1fbf6a';
+      for (let k = 0; k < 14; k++) {
+        const a = Math.random() * TAU, r = R * (1.05 + Math.random() * 0.3), s = 2 + Math.random() * 3;
+        const x = cx + Math.cos(a) * r, y = cy - Math.sin(a) * r;
+        c.globalAlpha = 0.5 + Math.random() * 0.5;
+        c.beginPath(); c.moveTo(x, y - s); c.lineTo(x + s * 0.6, y); c.lineTo(x, y + s); c.lineTo(x - s * 0.6, y); c.closePath(); c.fill();
+      }
+      c.restore();
+    }
+
+    const effectsActive = (now) => !reduce && (now - stopStart < 900 || now < rippleUntil || now < emeraldUntil || now - lastErase < 600);
 
     function drawScene(c, w, h, cx, cy, R, dot, lw, withHover) {
       if (!reduce && performance.now() < heavenUntil) {  // Made in Heaven: leave afterimages
@@ -485,11 +536,20 @@
       drawMenacing(c, cx, cy, R, status === 'training' ? 1 - 0.8 * score : 0);
       drawStar(c, cx, cy, R, score, lw);
       drawRipples(c, cx, cy, R);
+      drawEmerald(c, cx, cy, R);
+      const now = performance.now();
+      const heavy = now < echoesUntil ? 1.5 : 1;  // 3 FREEZE: everything gets heavier
       for (let i = 0; i < N; i++) {
+        let size = dot * heavy;
+        if (!model.active[i]) {                    // The Hand: erased points shrink away
+          const t = (now - (erasedAt[model.Y[i]] || -1e9)) / 500;
+          if (reduce || t >= 1) continue;
+          size *= 1 - t;
+        }
         const [x, y] = pos(i, cx, cy, R);
         c.fillStyle = colors.c[model.Y[i]];
         c.globalAlpha = hover && withHover && hover.i !== i ? 0.35 : 0.9;
-        c.beginPath(); c.arc(x, y, dot, 0, TAU); c.fill();
+        c.beginPath(); c.arc(x, y, size, 0, TAU); c.fill();
       }
       c.globalAlpha = 1;
       drawShockwave(c, cx, cy, R);
@@ -514,8 +574,24 @@
       c.fillStyle = col;
       c.beginPath(); c.arc(px, py, dot + 1.5, 0, TAU); c.fill();
       const cos = vu[0] * vu[2] + vu[1] * vu[3];
-      const sub = (n) => String(n).replace(/\d/g, (d) => '₀₁₂₃₄₅₆₇₈₉'[d]);
-      tip.textContent = `x${sub(hover.i)} · view₁ ↔ view₂ · cos ${cos.toFixed(2)}`;
+      const cosEl = tip.querySelector('.hd-cos');
+      if (cosEl) cosEl.textContent = `view₁ ↔ view₂ · cos ${cos.toFixed(2)}`;
+    }
+
+    // Heaven's Door: hovering a point opens it like a book — its raw 16-d input, as pages
+    const sub = (n) => String(n).replace(/\d/g, (d) => '₀₁₂₃₄₅₆₇₈₉'[d]);
+    function openBook(i) {
+      const xs = Array.from(model.X.subarray(i * D, (i + 1) * D));
+      const mx = Math.max(...xs.map(Math.abs)) || 1;
+      const col = colors.c[model.Y[i]];
+      const bars = xs.map((v, d) => {
+        const h = (Math.abs(v) / mx) * 15;
+        return `<rect x="${d * 10 + 1}" y="${v >= 0 ? 17 - h : 17}" width="8" height="${Math.max(0.8, h)}" fill="${col}"/>`;
+      }).join('');
+      tip.innerHTML = `<div class="hd-title">📖 Heaven's Door — x${sub(i)}</div>` +
+        `<svg class="hd-bars" viewBox="0 0 160 34" width="160" height="34" aria-hidden="true">` +
+        `<line x1="0" y1="17" x2="160" y2="17" stroke="currentColor" stroke-opacity="0.25"/>${bars}</svg>` +
+        `<div class="hd-meta">16-d input · concept hidden from the model</div><div class="hd-cos"></div>`;
     }
 
     hero.addEventListener('pointermove', (e) => {
@@ -524,6 +600,7 @@
       const { cx, cy, R } = heroGeom(r.width, r.height);
       let bi = -1, bd = 14 * 14;
       for (let i = 0; i < N; i++) {
+        if (!model.active[i]) continue;
         const [x, y] = pos(i, cx, cy, R);
         const d = (x - mx) * (x - mx) + (y - my) * (y - my);
         if (d < bd) { bd = d; bi = i; }
@@ -536,9 +613,10 @@
         hover = { i: bi };
         model.augment(bi, vx, 0);
         model.augment(bi, vx, D);
+        openBook(bi);
       }
       tip.hidden = false;
-      tip.style.left = Math.min(mx + 12, r.width - 190) + 'px';
+      tip.style.left = Math.max(4, Math.min(mx + 12, r.width - 214)) + 'px';
       tip.style.top = my + 14 + 'px';
       dirty = true;
       if (reduce) render();
@@ -607,7 +685,15 @@
       b.addEventListener('click', () => setTau(model.tau + parseFloat(b.dataset.tauStep)));
     }
     // ---- time Stands (typed into the prompt; see script.js) ----
-    const busy = () => !!rewinding || performance.now() < frozenUntil;
+    const busy = () => {
+      const now = performance.now();
+      return !!rewinding || now < frozenUntil || now < echoesUntil || now < emeraldUntil;
+    };
+    // remember the run right before a Stand acts, so Crazy Diamond can restore it
+    function checkpoint(name) {
+      cp = { name, st: model.saveState(), E: Float64Array.from(E), lossEma, best, stall, status, P0, trail: trail.slice() };
+    }
+    const resume = () => { if (status !== 'training') { best = Infinity; stall = 0; setStatus('training'); } };
     const flash = (cls, ms) => {
       if (!wrap || reduce) return;
       wrap.classList.add(cls);
@@ -617,6 +703,7 @@
     // King Crimson: the next ~300 steps happen, but the time in between is erased
     function kingCrimson(n = 300) {
       if (busy()) return false;
+      checkpoint('King Crimson');
       if (status !== 'training') reset();
       const a = model.step;
       for (let k = 0; k < n && status === 'training'; k++) { stats = model.stats(E); trainStep(); }
@@ -630,6 +717,7 @@
     // Made in Heaven: time accelerates x8 for a few seconds
     function madeInHeaven(ms = 6000) {
       if (busy()) return false;
+      checkpoint('Made in Heaven');
       if (reduce) { trainToConvergence(); log('⏩ Made in Heaven — time accelerated to the end', 'warn'); return true; }
       if (status !== 'training') reset();
       heavenUntil = performance.now() + ms;
@@ -642,6 +730,7 @@
     // Bites the Dust: play the trajectory backwards to step 0, then restart from the same initial weights
     function bitesTheDust(ms = 2500) {
       if (busy() || !P0) return false;
+      checkpoint('Bites the Dust');
       const back = () => {
         model.setParams(P0);
         lossEma = null; best = Infinity; stall = 0; heavenUntil = 0; rippleUntil = 0;
@@ -674,6 +763,95 @@
       return true;
     }
 
+    // The Hand: erase one hidden concept from space; the rest re-spread to fill the gap
+    function theHand() {
+      if (busy()) return 'busy';
+      const left = model.concepts();
+      if (left.length <= 5) return 'limit';
+      checkpoint('The Hand');
+      const k = left[(Math.random() * left.length) | 0];
+      model.erase(k);
+      erasedAt[k] = lastErase = performance.now();
+      if (hover && model.Y[hover.i] === k) { hover = null; tip.hidden = true; }
+      log(`✋ ZA HANDO! — a concept was erased from space (${left.length - 1} left)`, 'warn');
+      resume();
+      if (reduce) trainToConvergenceFrom();
+      dirty = true;
+      return left.length - 1;
+    }
+
+    // Crazy Diamond: restore the run to how it was right before the last Stand
+    function crazyDiamond() {
+      if (!cp) return false;
+      const c = cp;
+      cp = null;
+      cancelEffects();
+      model.loadState(c.st);
+      E.set(c.E);
+      lossEma = c.lossEma; best = c.best; stall = c.stall; P0 = c.P0; trail = c.trail;
+      for (const k in erasedAt) if (model.concepts().includes(+k)) delete erasedAt[k];
+      status = c.status;                                // restore quietly, without re-triggering ZA WARUDO
+      document.documentElement.dataset.run = status;
+      for (const el of document.querySelectorAll('[data-status]')) el.textContent = status;
+      if (tbc) tbc.classList.toggle('show', status === 'converged');
+      if (status === 'converged') convergedAt = performance.now();
+      log(`💎 DORARARA — restored to step ${model.step} (before ${c.name})`, 'ok');
+      if (wrap && !reduce) { wrap.classList.add('crazydiamond'); setTimeout(() => wrap.classList.remove('crazydiamond'), 700); }
+      dirty = true;
+      render();
+      return c.name;
+    }
+
+    // a timed tweak to the training setup that undoes itself (Echoes Act 3, Emerald Splash)
+    function timedTweak(ms, cls, apply, undo) {
+      const token = ++fxToken;
+      apply();
+      resume();
+      if (reduce) { trainToConvergenceFrom(); undo(); return; }
+      if (wrap) wrap.classList.add(cls);
+      setTimeout(() => {
+        if (token !== fxToken) return;
+        undo();
+        if (wrap) wrap.classList.remove(cls);
+        dirty = true;
+      }, ms);
+    }
+
+    // Echoes Act 3, "3 FREEZE": τ drops, everything gets heavier, clusters pull into tight knots
+    function echoes(ms = 8000) {
+      if (busy()) return false;
+      checkpoint('Echoes Act 3');
+      echoesTau = model.tau;
+      timedTweak(ms, 'echoes', () => {
+        model.tau = 0.08;
+        echoesUntil = performance.now() + ms;
+        log(`⬇ 3 FREEZE! — τ ${echoesTau.toFixed(2)} → 0.08`, 'warn');
+      }, () => {
+        model.tau = echoesTau;
+        echoesUntil = 0;
+        log(`τ back to ${echoesTau.toFixed(2)}`, 'warn');
+        drawMetrics();
+      });
+      drawMetrics();
+      return true;
+    }
+
+    // Hierophant Green, "Emerald Splash": a burst of much harsher augmentations
+    function emeraldSplash(ms = 5000) {
+      if (busy()) return false;
+      checkpoint('Emerald Splash');
+      timedTweak(ms, 'emerald', () => {
+        model.aug = { jitter: 0.9, mask: 0.5 };
+        emeraldUntil = performance.now() + ms;
+        log('💚 EMERALD SPLASH! — augmentations ×3', 'warn');
+      }, () => {
+        model.aug = { ...AUG };
+        emeraldUntil = 0;
+        log('splash over — recovering', 'warn');
+      });
+      return true;
+    }
+
     // reduced motion: finish a restored run without animating
     function trainToConvergenceFrom() {
       while (status === 'training') { stats = model.stats(E); trainStep(); }
@@ -684,9 +862,9 @@
     // for the prompt in script.js
     window.SSL.api = {
       reinit, setTau,
-      timeStop: (ms) => (busy() ? false : (timeStop(ms), true)),
+      timeStop: (ms) => (busy() ? false : (checkpoint('ZA WARUDO'), timeStop(ms), true)),
       freeze: (ms) => timeStop(ms),
-      kingCrimson, madeInHeaven, bitesTheDust,
+      kingCrimson, madeInHeaven, bitesTheDust, theHand, crazyDiamond, echoes, emeraldSplash,
       state: () => ({ step: model.step, loss: lossEma, tau: model.tau, status }),
     };
 
