@@ -22,6 +22,20 @@ if (clock) {
   setInterval(tick, 30000);
 }
 
+// news: tag future items "upcoming" and ongoing ones "now", so the list never needs manual edits
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+document.querySelectorAll('.news li[data-date]').forEach(li => {
+  const start = new Date(li.dataset.date + 'T00:00');
+  const end = new Date((li.dataset.end || li.dataset.date) + 'T00:00');
+  const label = start > today ? 'upcoming' : end >= today && li.dataset.end ? 'now' : '';
+  if (!label) return;
+  const tag = document.createElement('span');
+  tag.className = 'tag ' + label;
+  tag.textContent = label;
+  li.querySelector('.what').append(' ', tag);
+});
+
 // terminal tabs: highlight the section currently under the title bar
 const tabLinks = [...document.querySelectorAll('.tabs a')];
 const tabSecs = tabLinks.map(a => document.getElementById(a.getAttribute('href').slice(1))).filter(Boolean);
@@ -50,7 +64,7 @@ if (form) {
   // files shown by `ls`, and the section each one lives in
   const FILES = {
     'about.md': 'about', 'research_interests.yaml': 'interests', 'career.log': 'career',
-    'publications.bib': 'publications', 'projects/': 'projects', 'papers_i_love.txt': 'papers',
+    'news.log': 'news', 'publications.bib': 'publications', 'projects/': 'projects', 'papers_i_love.txt': 'papers',
     'trip/': 'misc', 'misc.yaml': 'misc', 'contact': 'contact',
   };
   const findFile = name => {
