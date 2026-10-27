@@ -218,7 +218,7 @@
   function initUI() {
     const hero = document.getElementById('ssl-canvas');
     if (!hero) return;
-    const spark = document.getElementById('ssl-spark');
+    const logEl = document.getElementById('train-log');
     const tip = document.getElementById('ssl-tip');
     const $ = (id) => document.getElementById(id);
     const TAU = Math.PI * 2;
@@ -232,7 +232,7 @@
     for (let i = 0; i < N; i++) off[i] = (model.rand() - 0.5) * 0.14;
 
     let lossEma = null, alignEma = 0, unifEma = 0, best = Infinity, stall = 0;
-    let status = 'training', convergedAt = 0, hist = [], histEvery = 5;
+    let status = 'training', convergedAt = 0;
     let stats = null, hover = null, dirty = true, frame = 0, raf = 0, heroVisible = true;
     let colors = {};
 
@@ -244,17 +244,35 @@
       dirty = true;
     }
 
+    // append a line to the train pane's log stream, keeping the last few
+    function log(text, cls) {
+      if (!logEl) return;
+      const line = document.createElement('div');
+      if (cls) line.className = cls;
+      line.textContent = text;
+      logEl.append(line);
+      while (logEl.childElementCount > 14) logEl.firstElementChild.remove();
+    }
+
     function reset() {
       model.init();
-      lossEma = null; best = Infinity; stall = 0; hist = []; histEvery = 5;
+      lossEma = null; best = Infinity; stall = 0;
+      log('↻ re-initializing weights…', 'warn');
       setStatus('training');
       model.embed(E);
       // keep S as-is so the old structure visibly shatters into the new random init
     }
 
     function setStatus(s) {
+      const was = status;
       status = s;
-      if (s === 'converged') convergedAt = performance.now();
+      if (s === 'converged') {
+        convergedAt = performance.now();
+        if (was !== 'converged') {
+          log(`✓ checkpoint saved: vegvisir.pt (step ${model.step.toLocaleString()})`, 'ok');
+          document.dispatchEvent(new CustomEvent('ssl:converged', { detail: { step: model.step, loss: lossEma } }));
+        }
+      }
       document.documentElement.dataset.run = s;
       for (const el of document.querySelectorAll('[data-status]')) el.textContent = s;
     }
@@ -264,13 +282,8 @@
       lossEma = lossEma == null ? r.loss : 0.97 * lossEma + 0.03 * r.loss;
       alignEma = 0.95 * alignEma + 0.05 * r.align;
       unifEma = 0.95 * unifEma + 0.05 * r.unif;
-      // keep the whole run in ≤160 samples: when full, halve resolution
-      if (model.step % histEvery === 0) {
-        hist.push(lossEma);
-        if (hist.length >= 160) {
-          hist = hist.filter((_, i) => i % 2 === 0);
-          histEvery *= 2;
-        }
+      if (model.step % 50 === 0) {
+        log(`step ${String(model.step).padStart(4)} | InfoNCE ${lossEma.toFixed(3)} | align ${alignEma.toFixed(3)} | unif ${unifEma.toFixed(2)}`);
       }
       model.embed(E);
       if (model.step % 200 === 0) {
@@ -459,30 +472,12 @@
 
     const heroGeom = (w, h) => ({ cx: w / 2, cy: h / 2, R: Math.min(w, h) * 0.34 });
 
-    function drawSpark() {
-      if (!spark) return;
-      const { ctx: c, w, h } = fit(spark);
-      c.clearRect(0, 0, w, h);
-      if (hist.length < 2) return;
-      let lo = Infinity, hi = -Infinity;
-      for (const v of hist) { lo = Math.min(lo, v); hi = Math.max(hi, v); }
-      const span = hi - lo || 1;
-      c.strokeStyle = colors.accent;
-      c.lineWidth = 1.5;
-      c.beginPath();
-      hist.forEach((v, i) => {
-        const x = (i / (hist.length - 1)) * w, y = 3 + (1 - (v - lo) / span) * (h - 6);
-        i ? c.lineTo(x, y) : c.moveTo(x, y);
-      });
-      c.stroke();
-    }
-
     function drawMetrics() {
       $('m-step').textContent = model.step.toLocaleString();
       $('m-loss').textContent = lossEma == null ? '—' : lossEma.toFixed(3);
       $('m-align').textContent = alignEma.toFixed(3);
       $('m-unif').textContent = unifEma.toFixed(3);
-      $('m-tau').textContent = model.tau.toFixed(2);
+      for (const el of document.querySelectorAll('[data-tau]')) el.textContent = model.tau.toFixed(2);
       for (const el of document.querySelectorAll('[data-step]')) el.textContent = model.step.toLocaleString();
       for (const el of document.querySelectorAll('[data-loss]')) el.textContent = lossEma == null ? '—' : lossEma.toFixed(2);
     }
@@ -493,7 +488,6 @@
         const { ctx, w, h } = fit(hero);
         const g = heroGeom(w, h);
         drawScene(ctx, w, h, g.cx, g.cy, g.R, 2.3, 1.4, true);
-        drawSpark();
       }
       drawMetrics();
       dirty = false;
@@ -516,14 +510,20 @@
     }
 
     // ---- controls ----
-    $('ssl-reinit').addEventListener('click', () => (reduce ? trainToConvergence() : reset()));
-    const tauIn = $('ssl-tau');
-    tauIn.addEventListener('input', () => {
-      model.tau = parseFloat(tauIn.value);
-      if (reduce) { drawMetrics(); return; }
+    const reinit = () => (reduce ? trainToConvergence() : reset());
+    function setTau(v) {
+      model.tau = Math.min(1, Math.max(0.05, v));
+      log(`τ ← ${model.tau.toFixed(2)}`, 'warn');
+      if (reduce) { trainToConvergence(); return; }
       if (status === 'converged') { best = Infinity; stall = 0; setStatus('training'); }
-    });
-    if (reduce) tauIn.addEventListener('change', trainToConvergence);
+      drawMetrics();
+    }
+    for (const b of document.querySelectorAll('[data-reinit]')) b.addEventListener('click', reinit);
+    for (const b of document.querySelectorAll('[data-tau-step]')) {
+      b.addEventListener('click', () => setTau(model.tau + parseFloat(b.dataset.tauStep)));
+    }
+    // for the prompt in script.js
+    window.SSL.api = { reinit, setTau, state: () => ({ step: model.step, loss: lossEma, tau: model.tau, status }) };
 
     // ---- lifecycle ----
     const start = () => { if (!raf && !reduce) raf = requestAnimationFrame(tick); };

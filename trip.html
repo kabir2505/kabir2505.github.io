@@ -11,30 +11,37 @@
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header class="topbar mono">
-        <a class="run" href="index.html">
-            <span class="faint">←</span>
-            <span class="faint">run/</span><b>kabir-jamadar</b>
-        </a>
-        <nav class="topnav">
-            <a href="index.html">home</a>
-            <button id="theme-toggle" class="icon-btn" type="button" aria-label="Toggle dark mode">◐</button>
-        </nav>
+    <header class="titlebar">
+        <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="title"><a href="index.html">kabir@msr — zsh — ~/research</a>/trip/ijcai26</span>
+        <button id="theme-toggle" class="theme-btn" type="button" aria-label="Toggle dark mode">◐ theme</button>
     </header>
 
     <main class="solo">
+        <div class="ps1"><span class="u">kabir@msr</span> <span class="p">~/research</span> <span class="g">git:(main)</span> <span class="arrow">❯</span> <span class="c">open trip/ijcai26</span></div>
         <h1>IJCAI-ECAI '26 trip</h1>
         <p class="lede">Bremen for IJCAI-ECAI 2026 and our paper on self-supervised learning for 3D medical imaging,
             with detours through Prague, Dresden, Berlin and Moritzburg.</p>
-        <div id="gallery" class="gallery"><p class="g-status mono faint">loading photos…</p></div>
-        <footer class="foot mono">
-            <a href="index.html">← back to the main page</a>
+        <div id="gallery" class="gallery"><p class="g-status dim">loading photos…</p></div>
+        <footer class="foot">
+            <a href="index.html">❯ cd ..  <span class="dim"># back to the main page</span></a>
         </footer>
     </main>
+
+    <footer class="statusbar">
+        <span class="sb-name">[kabir]</span>
+        <a class="win" href="index.html">0:zsh</a>
+        <a class="win" href="index.html#train">1:train</a>
+        <a class="win active" href="trip.html">2:trip*</a>
+        <span class="sb-right">
+            <span class="sb-branch">⎇ main</span>
+            <span id="clock"></span>
+        </span>
+    </footer>
 
     <script src="script.js"></script>
     <script src="gallery.js" defer></script>
