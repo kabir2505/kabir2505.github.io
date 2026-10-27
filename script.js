@@ -117,7 +117,7 @@ if (form) {
       '  theme              toggle light / dark',
       '  speedwagon [stand] Speedwagon explains what each Stand does',
       '  history, clear     the usual',
-      'stands:  za warudo · king crimson · made in heaven · bites the dust',
+      'stands:  star platinum · za warudo · king crimson · made in heaven · bites the dust',
       '         the hand · crazy diamond · echoes act 3 · emerald splash',
       '         (and hover a point in the training pane: Heaven\'s Door)',
       '…and a few things you might try in a real terminal (or in a JoJo fight).',
@@ -210,7 +210,6 @@ if (form) {
     python: () => block('Python 3.12 — the interesting script is already running in pane 1:train', 'dim'),
     exit: () => block('there is no escape; the model is still training.', 'dim'),
     // JoJo
-    ora: () => block('ORA ORA ORA ORA ORA ORA ORA ORA!', 'ok'),
     muda: () => block('MUDA MUDA MUDA MUDA MUDA MUDA!', 'err'),
     yare: () => block('yare yare daze…', 'dim'),
   };
@@ -235,6 +234,8 @@ if (form) {
   };
   STANDS['echoes act 3'] = a => (a.echoes() ? block('3 FREEZE! Everything feels heavier… τ drops to 0.08 for 8 seconds.', 'warn') : block(BUSY, 'dim'));
   STANDS['emerald splash'] = a => (a.emeraldSplash() ? block('EMERALD SPLASH! The augmentations hit three times harder for 5 seconds.', 'warn') : block(BUSY, 'dim'));
+  STANDS['star platinum'] = a => (a.starPlatinum() ? block('STAR PLATINUM! ORA ORA ORA ORA ORA ORA ORA ORA ORA!', 'warn') : block(BUSY, 'dim'));
+  STANDS['ora'] = STANDS['ora ora'] = STANDS['star finger'] = STANDS['star platinum'];
   STANDS['the world'] = STANDS['za warudo'];
   STANDS['killer queen'] = STANDS['bites the dust'];
   STANDS['za hando'] = STANDS['the hand'];
@@ -244,6 +245,10 @@ if (form) {
 
   // Speedwagon explains: a Stand card for each Stand on this page
   const CARDS = [
+    { key: 'star platinum', name: 'Star Platinum', user: 'Jotaro Kujo', part: 'Part 3 · Stardust Crusaders',
+      series: 'Superhuman speed and pinpoint precision; finishes fights with its ORA ORA rush.',
+      here: 'Finds the 48 points the model handles worst (their two augmented views disagree most) and rushes them with 200 extra training steps, then reports how much their agreement improved: hard-example mining.',
+      summon: ['star platinum', 'ora ora', 'ora'] },
     { key: 'za warudo', name: 'The World', user: 'DIO', part: 'Part 3 · Stardust Crusaders',
       series: 'Stops time for everyone but its user.',
       here: 'Pauses training for 5 seconds. It also fires on its own when the model converges: colors invert, a shockwave sweeps out, then the star, Hamon ripples and "To Be Continued".',

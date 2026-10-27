@@ -440,6 +440,7 @@ summary:hover { color: var(--link); }
 .canvas-wrap.crazydiamond #ssl-canvas { filter: hue-rotate(150deg) saturate(1.6) brightness(1.05); }        /* Crazy Diamond */
 .canvas-wrap.echoes #ssl-canvas { filter: sepia(0.4) hue-rotate(60deg) saturate(1.8); }                     /* Echoes Act 3 */
 .canvas-wrap.emerald #ssl-canvas { filter: hue-rotate(90deg) saturate(2); }                                 /* Emerald Splash */
+.canvas-wrap.starplatinum #ssl-canvas { filter: hue-rotate(250deg) saturate(1.3); }                          /* Star Platinum */
 
 /* Speedwagon's Stand cards */
 .stand-card {

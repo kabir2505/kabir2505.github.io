@@ -50,6 +50,7 @@
     const refreshPool = () => { pool = []; for (let i = 0; i < N; i++) if (m.active[i]) pool.push(i); };
     m.erase = (k) => { for (let i = 0; i < N; i++) if (Y[i] === k) m.active[i] = 0; refreshPool(); };
     m.restoreAll = () => { m.active.fill(1); refreshPool(); };
+    m.focus = null;                                // Star Platinum: when set, batches come only from these points
     m.concepts = () => { const seen = new Set(); for (let i = 0; i < N; i++) if (m.active[i]) seen.add(Y[i]); return [...seen]; };
 
     function init() {
@@ -108,7 +109,8 @@
     // one NT-Xent step; views (2k, 2k+1) are a positive pair
     m.train = function () {
       for (let k = 0; k < B; k++) {
-        const i = pool[(rand() * pool.length) | 0];
+        const src = m.focus || pool;
+        const i = src[(rand() * src.length) | 0];
         augment(i, xs, 2 * k * D);
         augment(i, xs, (2 * k + 1) * D);
       }
@@ -188,6 +190,31 @@
       return { loss: loss / V, align: align / B, unif: Math.log(unif / cnt) };
     };
 
+    // fixed augmented view pairs for some points, so agreement can be measured before and after training
+    m.views = (idxs, draws = 2) => {
+      const data = new Float64Array(idxs.length * draws * 2 * D);
+      idxs.forEach((i, n) => { for (let v = 0; v < draws * 2; v++) augment(i, data, (n * draws * 2 + v) * D); });
+      return { idxs, draws, data };
+    };
+    // mean cosine between each point's paired views under the current weights
+    const hA = new Float64Array(H), uA = new Float64Array(4);
+    m.agreeOn = ({ idxs, draws, data }) => {
+      const per = new Float64Array(idxs.length);
+      let mean = 0;
+      for (let n = 0; n < idxs.length; n++) {
+        let c = 0;
+        for (let d = 0; d < draws; d++) {
+          const o = (n * draws * 2 + d * 2) * D;
+          forward(data, o, hA, 0, uA, 0);
+          forward(data, o + D, hA, 0, uA, 2);
+          c += uA[0] * uA[2] + uA[1] * uA[3];
+        }
+        per[n] = c / draws;
+        mean += per[n] / idxs.length;
+      }
+      return { per, mean };
+    };
+
     // embed all clean samples into E (N*2)
     const hTmp = new Float64Array(H);
     m.embed = function (E) {
@@ -258,6 +285,7 @@
     let echoesUntil = 0, echoesTau = 0.2, emeraldUntil = 0, fxToken = 0;  // Echoes Act 3, Emerald Splash
     const erasedAt = {};                            // The Hand: concept -> when it was erased (for the fade)
     let lastErase = -1e9, cp = null;                // cp: checkpoint taken before the last Stand (Crazy Diamond)
+    let rushing = null, rushTargets = null;         // Star Platinum's ORA ORA rush
     const AUG = { jitter: 0.3, mask: 0.25 };
     const wrap = hero.closest('.canvas-wrap');
     let stats = null, hover = null, dirty = true, frame = 0, raf = 0, heroVisible = true;
@@ -319,9 +347,10 @@
       stopToken++; fxToken++;                          // pending timeouts become no-ops
       frozenUntil = 0; rippleUntil = 0; heavenUntil = 0;
       if (rewinding) { clearInterval(rewinding.timer); rewinding = null; }
+      if (rushing) { clearInterval(rushing); rushing = null; rushTargets = null; model.focus = null; }
       if (echoesUntil) { model.tau = echoesTau; echoesUntil = 0; }
       if (emeraldUntil) { model.aug = { ...AUG }; emeraldUntil = 0; }
-      if (wrap) wrap.classList.remove('timestop', 'kingcrimson', 'bitesdust', 'echoes', 'emerald', 'crazydiamond');
+      if (wrap) wrap.classList.remove('timestop', 'kingcrimson', 'bitesdust', 'echoes', 'emerald', 'crazydiamond', 'starplatinum');
     }
 
     // the run's starting weights + a coarse trajectory of the embedding, for Bites the Dust
@@ -517,7 +546,45 @@
       c.restore();
     }
 
-    const effectsActive = (now) => !reduce && (now - stopStart < 900 || now < rippleUntil || now < emeraldUntil || now - lastErase < 600);
+    // Star Platinum: rings on the targeted points, punch streaks and ORA bursts while the rush lasts
+    function drawRush(c, cx, cy, R, dot) {
+      if (reduce || !rushTargets) return;
+      const t = [...rushTargets];
+      c.save();
+      c.strokeStyle = '#7b5cff';
+      c.lineWidth = 1.2;
+      for (const i of t) {
+        const [x, y] = pos(i, cx, cy, R);
+        c.globalAlpha = 0.7;
+        c.beginPath(); c.arc(x, y, dot + 3, 0, TAU); c.stroke();
+      }
+      c.lineWidth = 2.2;
+      for (let k = 0; k < 6; k++) {                    // punches flying in
+        const [x, y] = pos(t[(Math.random() * t.length) | 0], cx, cy, R);
+        const a = Math.atan2(y - cy, x - cx) + (Math.random() - 0.5) * 0.6;
+        const r0 = R * (1.3 + Math.random() * 0.2), r1 = R * 1.08;
+        c.globalAlpha = 0.35 + Math.random() * 0.5;
+        c.beginPath();
+        c.moveTo(cx + Math.cos(a) * r0, cy + Math.sin(a) * r0);
+        c.lineTo(cx + Math.cos(a) * r1, cy + Math.sin(a) * r1);
+        c.stroke();
+      }
+      c.fillStyle = '#7b5cff';
+      c.font = `900 italic ${Math.round(R * 0.13)}px ${getComputedStyle(document.body).fontFamily}`;
+      c.textAlign = 'center';
+      for (let k = 0; k < 3; k++) {                    // ORA!
+        const [x, y] = pos(t[(Math.random() * t.length) | 0], cx, cy, R);
+        c.save();
+        c.globalAlpha = 0.5 + Math.random() * 0.5;
+        c.translate(x + (Math.random() - 0.5) * 18, y - 8 - Math.random() * 14);
+        c.rotate((Math.random() - 0.5) * 0.5);
+        c.fillText('ORA', 0, 0);
+        c.restore();
+      }
+      c.restore();
+    }
+
+    const effectsActive = (now) => !reduce && (!!rushing || now - stopStart < 900 || now < rippleUntil || now < emeraldUntil || now - lastErase < 600);
 
     function drawScene(c, w, h, cx, cy, R, dot, lw, withHover) {
       if (!reduce && performance.now() < heavenUntil) {  // Made in Heaven: leave afterimages
@@ -552,6 +619,7 @@
         c.beginPath(); c.arc(x, y, size, 0, TAU); c.fill();
       }
       c.globalAlpha = 1;
+      drawRush(c, cx, cy, R, dot);
       drawShockwave(c, cx, cy, R);
       if (withHover && hover) drawHover(c, cx, cy, R, dot);
     }
@@ -653,7 +721,7 @@
       raf = requestAnimationFrame(tick);
       frame++;
       const now = performance.now();
-      const frozen = now < frozenUntil || !!rewinding;  // ZA WARUDO, or Bites the Dust in progress
+      const frozen = now < frozenUntil || !!rewinding || !!rushing;  // ZA WARUDO, a rewind, or Star Platinum's rush (it trains itself)
       const heaven = now < heavenUntil;                // Made in Heaven: time accelerates
       let moved = 0;
       if (!frozen) {
@@ -687,7 +755,7 @@
     // ---- time Stands (typed into the prompt; see script.js) ----
     const busy = () => {
       const now = performance.now();
-      return !!rewinding || now < frozenUntil || now < echoesUntil || now < emeraldUntil;
+      return !!rewinding || !!rushing || now < frozenUntil || now < echoesUntil || now < emeraldUntil;
     };
     // remember the run right before a Stand acts, so Crazy Diamond can restore it
     function checkpoint(name) {
@@ -852,6 +920,44 @@
       return true;
     }
 
+    // Star Platinum: find the points the model handles worst (their two augmented views disagree most)
+    // and rush them with a barrage of training steps drawn only from those points: hard-example mining
+    function starPlatinum(steps = 200, k = 48) {
+      if (busy()) return false;
+      checkpoint('Star Platinum');
+      const all = [];
+      for (let i = 0; i < N; i++) if (model.active[i]) all.push(i);
+      const { per } = model.agreeOn(model.views(all));
+      const targets = all.map((i, n) => [per[n], i]).sort((a, b) => a[0] - b[0]).slice(0, k).map((x) => x[1]);
+      const probe = model.views(targets);            // fixed views: before/after are measured the same way
+      const before = model.agreeOn(probe).mean;
+      resume();
+      log(`👊 ORA ORA ORA — ${steps} steps on the ${k} hardest points`, 'warn');
+      const finish = () => {
+        model.focus = null; rushTargets = null; rushing = null;
+        if (wrap) wrap.classList.remove('starplatinum');
+        log(`⭐ ORA! — their agreement ${before.toFixed(3)} → ${model.agreeOn(probe).mean.toFixed(3)}`, 'ok');
+        dirty = true;
+      };
+      model.focus = targets;
+      if (reduce) {
+        for (let n = 0; n < steps && status === 'training'; n++) trainStep();
+        finish();
+        S.set(E); render();
+        return true;
+      }
+      rushTargets = new Set(targets);
+      if (wrap) wrap.classList.add('starplatinum');
+      let done = 0;
+      rushing = setInterval(() => {
+        for (let n = 0; n < 3 && done < steps; n++, done++) { stats = model.stats(E); trainStep(); }
+        smooth(0.3);
+        render();
+        if (done >= steps || status !== 'training') { clearInterval(rushing); finish(); }
+      }, 16);
+      return true;
+    }
+
     // reduced motion: finish a restored run without animating
     function trainToConvergenceFrom() {
       while (status === 'training') { stats = model.stats(E); trainStep(); }
@@ -864,7 +970,7 @@
       reinit, setTau,
       timeStop: (ms) => (busy() ? false : (checkpoint('ZA WARUDO'), timeStop(ms), true)),
       freeze: (ms) => timeStop(ms),
-      kingCrimson, madeInHeaven, bitesTheDust, theHand, crazyDiamond, echoes, emeraldSplash,
+      starPlatinum, kingCrimson, madeInHeaven, bitesTheDust, theHand, crazyDiamond, echoes, emeraldSplash,
       state: () => ({ step: model.step, loss: lossEma, tau: model.tau, status }),
     };
 

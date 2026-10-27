@@ -14,6 +14,7 @@ Not sure what a Stand does? Ask Speedwagon: `speedwagon` lists every Stand, and 
 
 | Stand | What it does to the model | What you see |
 |---|---|---|
+| `star platinum` / `ora ora` / `ora` | Finds the 48 points the model handles worst (their two augmented views disagree most) and rushes them with 200 extra training steps: hard-example mining. Reports how much their agreement improved | Purple rings on the targets, punches flying in, ORA bursts. `⭐ ORA! — their agreement 0.938 → 0.958` |
 | `za warudo` / `the world` | Training stops for 5s (also fires automatically when the model converges) | Inverted colors and a shockwave |
 | `king crimson` | ~300 training steps happen instantly; the time in between is erased | A crimson flash, and the points jump to where they'd be. The log shows `⏭ King Crimson — 300 steps erased` |
 | `made in heaven` | Training runs 8× faster for 6 seconds | Motion trails as points streak into place, then `▶ time flows normally` |
@@ -30,7 +31,7 @@ Not sure what a Stand does? Ask Speedwagon: `speedwagon` lists every Stand, and 
 - `↻ reinit` cancels everything.
 - Visitors with reduced motion get the same results without the animation.
 
-Other things to try: `help`, `ls`, `cat career.log`, `nvidia-smi`, `ora`, `muda`, `yare`, `sudo rm -rf /`.
+Other things to try: `help`, `ls`, `cat career.log`, `nvidia-smi`, `muda`, `yare`, `sudo rm -rf /`.
 
 ## Files
 
