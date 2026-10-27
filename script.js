@@ -22,6 +22,22 @@ if (clock) {
   setInterval(tick, 30000);
 }
 
+// terminal tabs: highlight the section currently under the title bar
+const tabLinks = [...document.querySelectorAll('.tabs a')];
+const tabSecs = tabLinks.map(a => document.getElementById(a.getAttribute('href').slice(1))).filter(Boolean);
+if (tabSecs.length) {
+  const update = () => {
+    const line = document.querySelector('.titlebar').offsetHeight + 40;
+    let current = tabSecs[0];
+    for (const sec of tabSecs) if (sec.getBoundingClientRect().top <= line) current = sec;
+    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) current = tabSecs[tabSecs.length - 1];
+    tabLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current.id));
+  };
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+}
+
 // ---- the prompt: a tiny shell over the page ----
 const form = document.getElementById('repl');
 if (form) {
@@ -35,7 +51,7 @@ if (form) {
   const FILES = {
     'about.md': 'about', 'research_interests.yaml': 'interests', 'career.log': 'career',
     'publications.bib': 'publications', 'projects/': 'projects', 'papers_i_love.txt': 'papers',
-    'trip/': 'trip', 'misc.yaml': 'misc', 'contact': 'contact',
+    'trip/': 'misc', 'misc.yaml': 'misc', 'contact': 'contact',
   };
   const findFile = name => {
     const n = (name || '').replace(/^\.\//, '');
