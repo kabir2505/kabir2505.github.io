@@ -4,8 +4,8 @@
     --panel: #ffffff;
     --panel-soft: #f6f8fa;
     --hover: #eaeef2;
-    --ink: #24292f;
-    --muted: #57606a;
+    --ink: #1f2328;
+    --muted: #424a53;
     --faint: #6e7781;
     --rule: #d0d7de;
     --rule-strong: #afb8c1;
@@ -79,7 +79,7 @@ html { background: var(--paper); scroll-behavior: smooth; }
 body {
     margin: 0;
     font-family: var(--mono);
-    font-size: 14px;
+    font-size: 15px;
     line-height: 1.7;
     color: var(--ink);
     background: var(--paper);
@@ -177,7 +177,8 @@ b { font-weight: 700; }
 @keyframes flash { 0% { background: var(--link-soft); } 100% { background: transparent; } }
 
 .sec-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; margin-bottom: 14px; }
-.sec-head h2 { font-family: var(--sans); font-size: 21px; font-weight: 700; margin: 0; letter-spacing: -0.01em; }
+.sec-head h2 { font-family: var(--mono); font-size: 21px; font-weight: 800; margin: 0; letter-spacing: -0.02em; }
+.sec-head h2::before { content: '## '; color: var(--magenta); }
 .cmdline { font-size: 12px; color: var(--faint); }
 .cmdline .arrow { color: var(--green); font-weight: 700; }
 .cmdline b { color: var(--muted); }
@@ -195,8 +196,8 @@ b { font-weight: 700; }
 .hero .cmdline { margin-bottom: 14px; }
 .who { display: flex; gap: 18px; align-items: center; }
 .avatar { width: 88px; height: 88px; border-radius: 50%; border: 1px solid var(--rule); flex: 0 0 auto; }
-.who h1 { font-family: var(--sans); font-size: 32px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; margin: 0 0 4px; }
-.tagline { font-family: var(--sans); font-size: 15px; color: var(--muted); }
+.who h1 { font-family: var(--mono); font-size: 32px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.15; margin: 0 0 6px; }
+.tagline { font-family: var(--sans); font-size: 16px; color: var(--muted); }
 .links { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 20px; }
 .links a {
     padding: 5px 13px;
@@ -220,17 +221,36 @@ b { font-weight: 700; }
 .files a:hover { color: var(--link); }
 
 /* cat about.md: prose reads in Inter */
-.prose { font-family: var(--sans); font-size: 15.5px; line-height: 1.75; }
+.prose { font-family: var(--sans); font-size: 16px; line-height: 1.75; }
 .prose h1 { font-family: var(--mono); font-size: 26px; margin: 4px 0 12px; line-height: 1.25; }
 .prose h1 .md { color: var(--magenta); }
 .prose p { margin: 0 0 10px; }
-.prose .lede { font-size: 16.5px; color: var(--muted); }
+.prose .lede { font-size: 17.5px; color: var(--ink); font-weight: 500; }
+
+/* research interests as chips in the intro */
+.interests { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0 0 20px; }
+.chips-label { color: var(--faint); font-size: 12px; margin-right: 4px; }
+.chips-label::before { content: '❯ '; color: var(--green); font-weight: 700; }
+.chip {
+    padding: 2px 11px;
+    border-radius: 999px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--cyan);
+    background: color-mix(in srgb, var(--cyan) 11%, transparent);
+    border: 1px solid color-mix(in srgb, var(--cyan) 25%, transparent);
+    cursor: default;
+}
+
+/* professors I've worked with */
+a.prof { font-weight: 600; border-bottom: 1px dashed currentColor; }
+a.prof:hover { text-decoration: none; border-bottom-style: solid; }
 
 /* news */
 .news { list-style: none; padding: 0; margin: 0; }
 .news li { display: grid; grid-template-columns: 15ch minmax(0, 1fr); gap: 16px; padding: 7px 0; }
 .news .when { color: var(--yellow); font-size: 12.5px; padding-top: 2px; white-space: nowrap; }
-.news .what { font-family: var(--sans); font-size: 15px; }
+.news .what { font-family: var(--sans); font-size: 15.5px; }
 .news .tag {
     padding: 1px 8px;
     border-radius: 999px;
@@ -267,16 +287,16 @@ b { font-weight: 700; }
     border-left: 1.5px solid var(--red);
     opacity: 0.6;
 }
-.gitlog .msg { font-family: var(--sans); font-size: 16px; }
+.gitlog .msg { font-family: var(--sans); font-size: 16.5px; }
 .gitlog .ref { margin-left: 6px; padding: 0 6px; border-radius: 4px; font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--cyan); background: color-mix(in srgb, var(--cyan) 12%, transparent); }
 .gitlog .ref.tag { color: var(--magenta); background: color-mix(in srgb, var(--magenta) 12%, transparent); }
 .gitlog .date { color: var(--yellow); font-size: 12px; }
-.gitlog .desc { font-family: var(--sans); font-size: 15px; color: var(--muted); margin-top: 2px; }
+.gitlog .desc { font-family: var(--sans); font-size: 15.5px; color: var(--muted); margin-top: 2px; }
 
 /* publications */
 .pub { font-family: var(--sans); }
-.pub-title { font-size: 16.5px; font-weight: 700; line-height: 1.45; margin-bottom: 4px; }
-.pub-meta { font-size: 14.5px; color: var(--muted); }
+.pub-title { font-size: 17px; font-weight: 700; line-height: 1.45; margin-bottom: 4px; }
+.pub-meta { font-size: 15px; color: var(--muted); }
 .pub-links { margin: 6px 0 4px; font-size: 14px; }
 .badge {
     margin-left: 6px;
@@ -303,7 +323,7 @@ b { font-weight: 700; }
 .perm { color: var(--faint); }
 .pname { color: var(--blue); font-family: var(--sans); font-size: 16px; font-weight: 700; }
 .tags { color: var(--yellow); font-size: 12px; }
-.proj .desc { font-family: var(--sans); font-size: 15px; color: var(--muted); margin: 3px 0 2px; }
+.proj .desc { font-family: var(--sans); font-size: 15.5px; color: var(--muted); margin: 3px 0 2px; }
 summary { cursor: pointer; color: var(--faint); width: fit-content; list-style: none; font-size: 12.5px; }
 summary::-webkit-details-marker { display: none; }
 summary::before { content: '▸ '; }

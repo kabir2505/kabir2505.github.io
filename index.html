@@ -22,9 +22,8 @@
         <nav class="tabs" aria-label="Sections">
             <a href="#about">About</a>
             <a href="#news">News</a>
-            <a href="#interests">Research</a>
-            <a href="#career">Experience</a>
             <a href="#publications">Publications</a>
+            <a href="#career">Experience</a>
             <a href="#projects">Projects</a>
             <a href="#misc">More</a>
             <a href="#contact">Contact</a>
@@ -49,10 +48,18 @@
                     <a href="https://twitter.com/kabir_j25">Twitter</a>
                     <a href="https://www.goodreads.com/user/show/187910952-kabir">Goodreads</a>
                 </div>
+                <div class="interests" aria-label="Research interests">
+                    <span class="chips-label">interests</span>
+                    <span class="chip" title="Understanding what models represent internally and why they behave the way they do.">interpretability</span>
+                    <span class="chip" title="Making models reliably do what we intend, and noticing early when they don't.">alignment</span>
+                    <span class="chip" title="How data and objectives during pretraining shape LLMs and MLLMs.">pretraining</span>
+                    <span class="chip" title="Learning useful representations from unlabeled data, like the model training on this page.">self-supervised learning</span>
+                    <span class="chip" title="How multimodal models tie language to what is actually in an image.">grounding</span>
+                </div>
                 <div class="prose">
                     <p class="lede">I'm a Research Intern at <b>Microsoft Research Bangalore</b> (from November 2026), working on embeddings, and a Data Science student at IIT Madras.</p>
                     <p>Before this, I worked on interpretability in multimodal LLMs at <a href="https://precog.iiit.ac.in/">Precog, IIIT Hyderabad</a> with
-                        Prof. Ponnurangam Kumaraguru, and on self-supervised learning for 3D medical imaging at VISTA Lab, IISc Bangalore, which became an
+                        <a class="prof" href="https://scholar.google.com/citations?user=MfzQyP8AAAAJ&hl=en">Prof. Ponnurangam Kumaraguru</a>, and on self-supervised learning for 3D medical imaging at <a href="https://www.vistalabiisc.com/">VISTA Lab, IISc Bangalore</a> with <a class="prof" href="https://www.punitrathore.com/home">Prof. Punit Rathore</a>, which became an
                         IJCAI-ECAI 2026 paper.</p>
                     <p>Broadly, I want to understand how models think, reason and fail, and how they can be improved. That draws me to interpretability,
                         alignment, pretraining, self-supervised learning and grounding in multimodal models. I like learning methods by building them from scratch,
@@ -106,14 +113,22 @@
                 </ul>
             </div>
 
-            <div class="cmd" id="interests">
-                <div class="sec-head"><h2>Research interests</h2><span class="cmdline"><span class="arrow">❯</span> cat research_interests.yaml</span></div>
-                <div class="out yaml">
-                    <div class="ln"><span class="k">interpretability</span><span class="v">Understanding what models represent internally and why they behave the way they do: features, circuits, and how they fail.</span></div>
-                    <div class="ln"><span class="k">alignment</span><span class="v">Making models reliably do what we intend, and noticing early when they don't.</span></div>
-                    <div class="ln"><span class="k">pretraining</span><span class="v">How data and objectives during pretraining shape the capabilities and representations of LLMs and MLLMs.</span></div>
-                    <div class="ln"><span class="k">self-supervised learning</span><span class="v">Learning useful representations from unlabeled data, like the contrastive model training on this page.</span></div>
-                    <div class="ln"><span class="k">grounding</span><span class="v">How multimodal models tie language to what is actually in an image, and what they rely on when they talk about it.</span></div>
+            <div class="cmd" id="publications">
+                <div class="sec-head"><h2>Publications</h2><span class="cmdline"><span class="arrow">❯</span> cat publications.bib</span></div>
+                <div class="out pub">
+                    <div class="pub-title">Two-Fold Patch Perturbation for Efficient Self-Supervised Learning in 3D Medical Imaging</div>
+                    <div class="pub-meta">Tirthajit Baruah, <span class="me">Kabir Jamadar</span>, <a class="prof" href="https://www.punitrathore.com/home">Punit Rathore</a> · <a href="https://www.vistalabiisc.com/">VISTA Lab, IISc</a></div>
+                    <div class="pub-meta"><a href="https://2026.ijcai.org/">IJCAI-ECAI 2026</a> · The 35th International Joint Conference on Artificial Intelligence <span class="badge">accepted</span></div>
+                    <div class="pub-links"><a href="trip.html">📸 conference trip photos →</a></div>
+                    <details>
+                        <summary>show BibTeX</summary>
+                        <div class="bib"><span class="at">@inproceedings</span>{<span class="key">baruah2026twofold</span>,
+  <span class="f">title</span>     = {Two-Fold Patch Perturbation for Efficient Self-Supervised Learning in 3D Medical Imaging},
+  <span class="f">author</span>    = {Baruah, Tirthajit and Jamadar, Kabir and Rathore, Punit},
+  <span class="f">booktitle</span> = {IJCAI-ECAI 2026: The 35th International Joint Conference on Artificial Intelligence},
+  <span class="f">year</span>      = {2026}
+}</div>
+                    </details>
                 </div>
             </div>
 
@@ -128,36 +143,17 @@
                     <div class="commit">
                         <div class="date">Jan 2026 – Jul 2026</div>
                         <div class="msg"><b>Research Intern, <a href="https://precog.iiit.ac.in/">Precog, IIIT Hyderabad</a></b></div>
-                        <div class="desc">Interpretability in Multimodal Large Language Models (MLLMs), with <a href="https://scholar.google.com/citations?user=MfzQyP8AAAAJ&hl=en">Prof. Ponnurangam Kumaraguru</a>.</div>
+                        <div class="desc">Interpretability in Multimodal Large Language Models (MLLMs), with <a class="prof" href="https://scholar.google.com/citations?user=MfzQyP8AAAAJ&hl=en">Prof. Ponnurangam Kumaraguru</a>.</div>
                     </div>
                     <div class="commit">
                         <div class="date">Sep 2025 – Jan 2026</div>
-                        <div class="msg"><b>Research Intern, VISTA Lab, IISc Bangalore</b></div>
-                        <div class="desc">Self-supervised learning for 3D medical imaging with Prof. Punit Rathore, which led to our <a href="#publications">IJCAI-ECAI 2026 paper</a>.</div>
+                        <div class="msg"><b>Research Intern, <a href="https://www.vistalabiisc.com/">VISTA Lab, IISc Bangalore</a></b></div>
+                        <div class="desc">Self-supervised learning for 3D medical imaging with <a class="prof" href="https://www.punitrathore.com/home">Prof. Punit Rathore</a>, which led to our <a href="#publications">IJCAI-ECAI 2026 paper</a>.</div>
                     </div>
                     <div class="commit last">
                         <div class="date">Sep 2022 – present</div>
                         <div class="msg"><b>Data Science, IIT Madras</b> <span class="ref tag">education</span></div>
                     </div>
-                </div>
-            </div>
-
-            <div class="cmd" id="publications">
-                <div class="sec-head"><h2>Publications</h2><span class="cmdline"><span class="arrow">❯</span> cat publications.bib</span></div>
-                <div class="out pub">
-                    <div class="pub-title">Two-Fold Patch Perturbation for Efficient Self-Supervised Learning in 3D Medical Imaging</div>
-                    <div class="pub-meta">Tirthajit Baruah, <span class="me">Kabir Jamadar</span>, Punit Rathore</div>
-                    <div class="pub-meta"><a href="https://2026.ijcai.org/">IJCAI-ECAI 2026</a> · The 35th International Joint Conference on Artificial Intelligence <span class="badge">accepted</span></div>
-                    <div class="pub-links"><a href="trip.html">📸 conference trip photos →</a></div>
-                    <details>
-                        <summary>show BibTeX</summary>
-                        <div class="bib"><span class="at">@inproceedings</span>{<span class="key">baruah2026twofold</span>,
-  <span class="f">title</span>     = {Two-Fold Patch Perturbation for Efficient Self-Supervised Learning in 3D Medical Imaging},
-  <span class="f">author</span>    = {Baruah, Tirthajit and Jamadar, Kabir and Rathore, Punit},
-  <span class="f">booktitle</span> = {IJCAI-ECAI 2026: The 35th International Joint Conference on Artificial Intelligence},
-  <span class="f">year</span>      = {2026}
-}</div>
-                    </details>
                 </div>
             </div>
 

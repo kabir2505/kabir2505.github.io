@@ -63,7 +63,7 @@ if (form) {
 
   // files shown by `ls`, and the section each one lives in
   const FILES = {
-    'about.md': 'about', 'research_interests.yaml': 'interests', 'career.log': 'career',
+    'about.md': 'about', 'research_interests.yaml': 'about', 'career.log': 'career',
     'news.log': 'news', 'publications.bib': 'publications', 'projects/': 'projects', 'papers_i_love.txt': 'papers',
     'trip/': 'misc', 'misc.yaml': 'misc', 'contact': 'contact',
   };
