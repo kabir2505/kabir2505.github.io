@@ -131,7 +131,7 @@
                     <div class="pub-title">Two-Fold Patch Perturbation for Efficient Self-Supervised Learning in 3D Medical Imaging</div>
                     <div class="pub-meta">Tirthajit Baruah, <span class="me">Kabir Jamadar</span>, <a class="prof" href="https://www.punitrathore.com/home">Punit Rathore</a> · <a href="https://www.vistalabiisc.com/">VISTA Lab, IISc</a></div>
                     <div class="pub-meta"><a href="https://2026.ijcai.org/">IJCAI-ECAI 2026</a> · The 35th International Joint Conference on Artificial Intelligence <span class="badge">accepted</span></div>
-                    <div class="pub-links"><a href="trip.html">📸 conference trip photos →</a></div>
+                    <div class="pub-links"><a href="https://github.com/kabir2505/Two-Fold">&lt;/&gt; code</a> · <a href="trip.html">📸 conference trip photos →</a></div>
                     <details>
                         <summary>show BibTeX</summary>
                         <div class="bib"><span class="at">@inproceedings</span>{<span class="key">baruah2026twofold</span>,
@@ -173,6 +173,22 @@
                 <div class="sec-head"><h2>Projects</h2><span class="cmdline"><span class="arrow">❯</span> ls projects/</span></div>
                 <div class="out projects">
                     <div class="proj">
+                        <div class="row"><a class="pname" href="https://github.com/kabir2505/Two-Fold">Two-Fold Patch Perturbation</a><span class="tags">ijcai-ecai 2026 · ssl · 3d medical imaging</span></div>
+                        <p class="desc">Official code for our <a href="#publications">IJCAI-ECAI 2026 paper</a>: a simple, lightweight self-supervised pre-training framework for 3D medical images.
+                            Patches are perturbed two ways, and one shared encoder learns to undo and explain the damage, giving spatially aware, transferable representations
+                            while using substantially less memory, compute and training time than state-of-the-art pipelines.</p>
+                        <details>
+                            <summary>details</summary>
+                            <div class="tree">
+                                <div>├── perturbations: Bernoulli patch masking + discrete rotations</div>
+                                <div>├── objective: shared encoder, three heads: reconstruction, perturbation localization, rotation prediction</div>
+                                <div>├── downstream: segmentation (BTCV, AMOS, WORD, LiTS, MM-WHS, Spleen, BraTS'18) and classification, incl. modality shift</div>
+                                <div>├── results: beats general SSL baselines; competitive or better than recent medical SSL methods</div>
+                                <div>└── code: YAML configs + torchrun DDP scripts for pre-training, fine-tuning and evaluation</div>
+                            </div>
+                        </details>
+                    </div>
+                    <div class="proj">
                         <div class="row"><a class="pname" href="https://github.com/kabir2505/tiny-mixtral">Tiny-Mixtral 175M MoE</a><span class="tags">moe · gqa · kv-cache</span></div>
                         <p class="desc">A simplified re-implementation of the <b>Mixtral of Experts (MoE)</b> architecture.</p>
                         <details>
@@ -208,16 +224,6 @@
                             <div class="tree">
                                 <div>├── modules: Joke Generation via Plan &amp; Search, LLM-as-Judge with 7+ humor personas, Novelty Detection using FAISS &amp; POS patterns</div>
                                 <div>└── focus: Incongruity modeling, Subjective humor evaluation, Creative alignment in LLMs</div>
-                            </div>
-                        </details>
-                    </div>
-                    <div class="proj">
-                        <div class="row"><a class="pname" href="https://github.com/kabir2505/MangaKensaku">MangaKensaku</a><span class="tags">clip · faiss · fastapi</span></div>
-                        <p class="desc">A FastAPI-based app that retrieves the most relevant manga panels using natural language queries. Built to explore how FAISS performs similarity search on CLIP-based image embeddings.</p>
-                        <details>
-                            <summary>details</summary>
-                            <div class="tree">
-                                <div>└── features: CLIP-based embeddings, FAISS similarity search (IndexFlatIP), Semantic image search, Multimodal retrieval (text-image), Efficient ANN using FAISS</div>
                             </div>
                         </details>
                     </div>
