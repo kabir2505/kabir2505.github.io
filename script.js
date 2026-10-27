@@ -86,7 +86,7 @@ if (form) {
       '  trip               open the IJCAI-ECAI \'26 photos',
       '  theme              toggle light / dark',
       '  history, clear     the usual',
-      '…and a few things you might try in a real terminal.',
+      '…and a few things you might try in a real terminal (or in a JoJo fight).',
     ].join('\n')),
     ls: () => {
       const div = document.createElement('div');
@@ -175,6 +175,17 @@ if (form) {
       : block('usage: pip list', 'dim')),
     python: () => block('Python 3.12 — the interesting script is already running in pane 1:train', 'dim'),
     exit: () => block('there is no escape; the model is still training.', 'dim'),
+    // JoJo
+    ora: () => block('ORA ORA ORA ORA ORA ORA ORA ORA!', 'ok'),
+    muda: () => block('MUDA MUDA MUDA MUDA MUDA MUDA!', 'err'),
+    yare: () => block('yare yare daze…', 'dim'),
+    za: (args, raw) => (/^za\s+warudo$/i.test(raw) ? COMMANDS['the'](['world'], 'the world') : block('zsh: command not found: za', 'err')),
+    the: args => {
+      if ((args[0] || '').toLowerCase() !== 'world') return block(`zsh: command not found: the`, 'err');
+      const a = api();
+      if (a) a.freeze(5000);
+      return block('ZA WARUDO! Time has stopped. (training paused for 5 seconds)', 'warn');
+    },
   };
   COMMANDS.vi = COMMANDS.nano = COMMANDS.vim;
   COMMANDS.top = COMMANDS.htop;
@@ -187,18 +198,15 @@ if (form) {
     history.push(text);
     hIdx = history.length;
     const [cmd, ...args] = text.split(/\s+/);
-    const fn = COMMANDS[cmd];
+    const fn = COMMANDS[cmd.toLowerCase()];
     const result = fn ? fn(args, text) : block(`zsh: command not found: ${cmd}`, 'err');
     if (cmd === 'clear') return;
     const entry = document.createElement('div');
     entry.className = 'cmd typed';
-    const ps1 = form.querySelector('label').cloneNode(true);
-    ps1.removeAttribute('for');
+    const ps1 = document.createElement('div');
     ps1.className = 'ps1';
-    const c = document.createElement('span');
-    c.className = 'c';
-    c.textContent = ' ' + text;
-    ps1.append(c);
+    ps1.innerHTML = '<span class="arrow">❯</span> <span class="c"></span>';
+    ps1.lastChild.textContent = text;
     entry.append(ps1);
     if (result) {
       result.classList.add('out');

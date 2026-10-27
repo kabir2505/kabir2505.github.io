@@ -1,7 +1,7 @@
 // A tiny contrastive (SimCLR / NT-Xent) model that trains live in the browser.
 // 8 hidden concepts in R^16 -> MLP 16→32→2 -> unit circle. No labels are used for
 // training; the colors are revealed to the viewer only. When it converges, the
-// cluster centroids become the staves of a Vegvísir.
+// cluster centroids become the points of a (JoJo-flavoured) star.
 (function () {
   'use strict';
 
@@ -219,6 +219,7 @@
     const hero = document.getElementById('ssl-canvas');
     if (!hero) return;
     const logEl = document.getElementById('train-log');
+    const tbc = document.getElementById('tbc');
     const tip = document.getElementById('ssl-tip');
     const $ = (id) => document.getElementById(id);
     const TAU = Math.PI * 2;
@@ -232,14 +233,14 @@
     for (let i = 0; i < N; i++) off[i] = (model.rand() - 0.5) * 0.14;
 
     let lossEma = null, alignEma = 0, unifEma = 0, best = Infinity, stall = 0;
-    let status = 'training', convergedAt = 0;
+    let status = 'training', convergedAt = 0, frozenUntil = 0;
     let stats = null, hover = null, dirty = true, frame = 0, raf = 0, heroVisible = true;
     let colors = {};
 
     function readTheme() {
       const cs = getComputedStyle(document.documentElement);
       const v = (n) => cs.getPropertyValue(n).trim();
-      colors = { ink: v('--ink'), muted: v('--muted'), rule: v('--rule'), accent: v('--accent'), panel: v('--panel'), c: [] };
+      colors = { ink: v('--ink'), muted: v('--muted'), rule: v('--rule'), accent: v('--accent'), panel: v('--panel'), gold: v('--gold'), magenta: v('--magenta'), c: [] };
       for (let k = 0; k < K; k++) colors.c.push(v('--c' + k));
       dirty = true;
     }
@@ -258,6 +259,7 @@
       model.init();
       lossEma = null; best = Infinity; stall = 0;
       log('↻ re-initializing weights…', 'warn');
+      if (tbc) tbc.classList.remove('show');
       setStatus('training');
       model.embed(E);
       // keep S as-is so the old structure visibly shatters into the new random init
@@ -269,7 +271,8 @@
       if (s === 'converged') {
         convergedAt = performance.now();
         if (was !== 'converged') {
-          log(`✓ checkpoint saved: vegvisir.pt (step ${model.step.toLocaleString()})`, 'ok');
+          log(`✓ checkpoint saved: star.pt (step ${model.step.toLocaleString()})`, 'ok');
+          if (tbc) tbc.classList.add('show');
           document.dispatchEvent(new CustomEvent('ssl:converged', { detail: { step: model.step, loss: lossEma } }));
         }
       }
@@ -283,7 +286,7 @@
       alignEma = 0.95 * alignEma + 0.05 * r.align;
       unifEma = 0.95 * unifEma + 0.05 * r.unif;
       if (model.step % 50 === 0) {
-        log(`step ${String(model.step).padStart(4)} | InfoNCE ${lossEma.toFixed(3)} | align ${alignEma.toFixed(3)} | unif ${unifEma.toFixed(2)}`);
+        log(`step ${String(model.step).padStart(4)}  loss ${lossEma.toFixed(3)}  align ${alignEma.toFixed(3)}`);
       }
       model.embed(E);
       if (model.step % 200 === 0) {
@@ -322,69 +325,63 @@
 
     const ease = (t) => 1 - Math.pow(1 - Math.min(1, Math.max(0, t)), 3);
 
-    // stave end-glyphs, drawn in a frame where the stave runs along +x and ends at x
-    const GLYPHS = [
-      (c, x, s) => { // trident
-        c.moveTo(x, -0.7 * s); c.lineTo(x, 0.7 * s);
-        c.moveTo(x, -0.7 * s); c.lineTo(x + 0.6 * s, -0.7 * s);
-        c.moveTo(x, 0.7 * s); c.lineTo(x + 0.6 * s, 0.7 * s);
-        c.moveTo(x, 0); c.lineTo(x + 0.8 * s, 0);
-      },
-      (c, x, s) => { c.moveTo(x + 0.9 * s, 0); c.arc(x + 0.45 * s, 0, 0.45 * s, 0, TAU); }, // ring
-      (c, x, s) => { // double crossbar
-        c.moveTo(x, -0.6 * s); c.lineTo(x, 0.6 * s);
-        c.moveTo(x - 0.5 * s, -0.45 * s); c.lineTo(x - 0.5 * s, 0.45 * s);
-      },
-      (c, x, s) => { // open fork
-        c.moveTo(x, 0); c.lineTo(x + 0.8 * s, -0.6 * s);
-        c.moveTo(x, 0); c.lineTo(x + 0.8 * s, 0.6 * s);
-      },
-      (c, x, s) => { // arrowhead
-        c.moveTo(x, 0); c.lineTo(x + 0.5 * s, 0);
-        c.moveTo(x + 0.5 * s, 0); c.lineTo(x - 0.2 * s, -0.6 * s);
-        c.moveTo(x + 0.5 * s, 0); c.lineTo(x - 0.2 * s, 0.6 * s);
-      },
-      (c, x, s) => { // crossbar with rings
-        c.moveTo(x, -0.55 * s); c.lineTo(x, 0.55 * s);
-        c.moveTo(x + 0.2 * s, -0.75 * s); c.arc(x, -0.75 * s, 0.2 * s, 0, TAU);
-        c.moveTo(x + 0.2 * s, 0.75 * s); c.arc(x, 0.75 * s, 0.2 * s, 0, TAU);
-      },
-      (c, x, s) => { // hooked bar
-        c.moveTo(x - 0.5 * s, -0.7 * s); c.lineTo(x, -0.7 * s); c.lineTo(x, 0.7 * s); c.lineTo(x - 0.5 * s, 0.7 * s);
-      },
-      (c, x, s) => { // diamond
-        c.moveTo(x, 0); c.lineTo(x + 0.5 * s, -0.45 * s); c.lineTo(x + s, 0); c.lineTo(x + 0.5 * s, 0.45 * s); c.closePath();
-        c.moveTo(x - 0.6 * s, -0.4 * s); c.lineTo(x - 0.6 * s, 0.4 * s);
-      },
-    ];
-
-    function drawVegvisir(c, cx, cy, R, a, lw) {
+    // JoJo: the learned cluster centroids become the points of a star (an {8/3} star polygon),
+    // drawn in as the model converges, with a small Joestar-style star in the middle.
+    function drawStar(c, cx, cy, R, a, lw) {
       if (!stats || a < 0.01) return;
-      const r0 = R * 0.11, r1 = R * 0.74, g = R * 0.08;
+      const angles = stats.cents.map((ce) => ce.angle).sort((x, y) => x - y);
+      const n = angles.length, r = R * 0.8;
+      const pt = (i) => [cx + Math.cos(angles[i % n]) * r, cy - Math.sin(angles[i % n]) * r];
+      const p = ease(a * 1.2) * n;                 // how many of the n edges are drawn so far
       c.save();
-      c.translate(cx, cy);
       c.strokeStyle = colors.ink;
       c.lineWidth = lw;
-      c.lineCap = 'round';
       c.lineJoin = 'round';
-      c.globalAlpha = 0.85 * a;
-      c.beginPath(); c.arc(0, 0, r0, 0, TAU); c.stroke();
-      c.beginPath(); c.arc(0, 0, r0 * 0.38, 0, TAU); c.stroke();
-      const end = r0 + (r1 - r0) * ease(a * 1.25);
-      for (const ce of stats.cents) {
-        c.save();
-        c.rotate(ce.angle);
+      c.globalAlpha = 0.75 * a;
+      c.beginPath();
+      let [x0, y0] = pt(0);
+      c.moveTo(x0, y0);
+      for (let e = 0; e < Math.ceil(p); e++) {
+        const [x1, y1] = pt((e + 1) * 3);
+        const f = Math.min(1, p - e);
+        c.lineTo(x0 + (x1 - x0) * f, y0 + (y1 - y0) * f);
+        [x0, y0] = [x1, y1];
+      }
+      c.stroke();
+      const ga = Math.max(0, (a - 0.6) / 0.4);
+      if (ga > 0) {
+        const rs = R * 0.13;
+        c.globalAlpha = ga;
+        c.fillStyle = colors.gold;
         c.beginPath();
-        c.moveTo(r0, 0); c.lineTo(end, 0);
-        if (ce.k % 2) { const m = r0 + (end - r0) * 0.55; c.moveTo(m, -g * 0.4); c.lineTo(m, g * 0.4); }
-        c.stroke();
-        const ga = Math.max(0, (a - 0.6) / 0.4);
-        if (ga > 0) {
-          c.globalAlpha = 0.85 * a * ga;
-          c.beginPath();
-          GLYPHS[ce.k](c, end, g);
-          c.stroke();
+        for (let k = 0; k < 10; k++) {
+          const rr = k % 2 ? rs * 0.42 : rs, th = -Math.PI / 2 + (k * Math.PI) / 5;
+          k ? c.lineTo(cx + Math.cos(th) * rr, cy + Math.sin(th) * rr) : c.moveTo(cx + Math.cos(th) * rr, cy + Math.sin(th) * rr);
         }
+        c.closePath();
+        c.fill();
+      }
+      c.restore();
+    }
+
+    // ゴゴゴ: menacing glyphs drifting around the ring while the model is still training
+    const MENACE = Array.from({ length: 7 }, (_, i) => ({ a: (i / 7) * TAU + 0.4, seed: i * 0.137 }));
+    function drawMenacing(c, cx, cy, R, intensity) {
+      if (intensity < 0.02 || reduce) return;
+      const t = performance.now() * 0.00035;
+      c.save();
+      c.fillStyle = colors.magenta;
+      c.font = `700 ${Math.round(R * 0.17)}px "Hiragino Sans", "Noto Sans JP", sans-serif`;
+      c.textAlign = 'center';
+      c.textBaseline = 'middle';
+      for (const m of MENACE) {
+        const ph = (t + m.seed) % 1;
+        const r = R * (1.22 + 0.06 * Math.sin(m.seed * 40));
+        c.globalAlpha = intensity * 0.55 * Math.sin(Math.PI * ph);
+        c.save();
+        c.translate(cx + Math.cos(m.a) * r, cy - Math.sin(m.a) * r - ph * R * 0.18);
+        c.rotate(-0.15);
+        c.fillText('ゴ', 0, 0);
         c.restore();
       }
       c.restore();
@@ -400,14 +397,9 @@
       c.strokeStyle = colors.rule;
       c.lineWidth = 1;
       c.beginPath(); c.arc(cx, cy, R, 0, TAU); c.stroke();
-      for (let t = 0; t < 72; t++) { // compass ticks
-        const a = (t / 72) * TAU, l = t % 9 === 0 ? 7 : 3;
-        c.beginPath();
-        c.moveTo(cx + Math.cos(a) * (R * 1.12), cy + Math.sin(a) * (R * 1.12));
-        c.lineTo(cx + Math.cos(a) * (R * 1.12 + l), cy + Math.sin(a) * (R * 1.12 + l));
-        c.stroke();
-      }
-      drawVegvisir(c, cx, cy, R, stats ? stats.score : 0, lw);
+      const score = stats ? stats.score : 0;
+      drawMenacing(c, cx, cy, R, status === 'training' ? 1 - 0.8 * score : 0);
+      drawStar(c, cx, cy, R, score, lw);
       for (let i = 0; i < N; i++) {
         const [x, y] = pos(i, cx, cy, R);
         c.fillStyle = colors.c[model.Y[i]];
@@ -496,6 +488,7 @@
     function tick() {
       raf = requestAnimationFrame(tick);
       frame++;
+      if (performance.now() < frozenUntil) return;     // ZA WARUDO: time has stopped
       if (status === 'training') trainStep();
       else if (performance.now() - convergedAt > 20000) reset();
       const moved = smooth(0.12);
@@ -523,7 +516,13 @@
       b.addEventListener('click', () => setTau(model.tau + parseFloat(b.dataset.tauStep)));
     }
     // for the prompt in script.js
-    window.SSL.api = { reinit, setTau, state: () => ({ step: model.step, loss: lossEma, tau: model.tau, status }) };
+    const freeze = (ms) => {
+      frozenUntil = performance.now() + ms;
+      convergedAt += ms;                               // don't count frozen time toward the auto re-init
+      log('⏸ ZA WARUDO — time has stopped', 'warn');
+      setTimeout(() => log('▶ time resumes', 'warn'), ms);
+    };
+    window.SSL.api = { reinit, setTau, freeze, state: () => ({ step: model.step, loss: lossEma, tau: model.tau, status }) };
 
     // ---- lifecycle ----
     const start = () => { if (!raf && !reduce) raf = requestAnimationFrame(tick); };

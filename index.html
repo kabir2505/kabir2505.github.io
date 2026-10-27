@@ -42,7 +42,7 @@
             </div>
 
             <div class="cmd" id="ls">
-                <div class="ps1"><span class="u">kabir@msr</span> <span class="p">~/research</span> <span class="g">git:(main)</span> <span class="arrow">❯</span> <span class="c">ls</span></div>
+                <div class="ps1"><span class="arrow">❯</span> <span class="c">ls</span></div>
                 <nav class="out files" aria-label="Sections">
                     <a href="#about">about.md</a>
                     <a href="#interests">research_interests.yaml</a>
@@ -57,7 +57,7 @@
             </div>
 
             <div class="cmd" id="about">
-                <div class="ps1"><span class="u">kabir@msr</span> <span class="p">~/research</span> <span class="g">git:(main)</span> <span class="arrow">❯</span> <span class="c">cat about.md</span></div>
+                <div class="ps1"><span class="arrow">❯</span> <span class="c">cat about.md</span></div>
                 <div class="out prose">
                     <h1><span class="md">#</span> Hi, I'm Kabir J.</h1>
                     <p class="lede">I'm a Research Intern at <b>Microsoft Research</b>, working on embeddings, and a Data Science student at IIT Madras.</p>
@@ -66,7 +66,7 @@
                         IJCAI-ECAI 2026 paper.</p>
                     <p>Broadly, I want to understand how models think, reason and fail, and how they can be improved. That draws me to interpretability,
                         alignment, pretraining, self-supervised learning and grounding in multimodal models. I like learning methods by building them from scratch,
-                        which is how this page ended up with a neural network training in the next pane.</p>
+                        which is how this page ended up with a neural network training on it.</p>
                 </div>
             </div>
         </section>
@@ -77,8 +77,9 @@
                 <span class="pill" data-status>training</span>
             </div>
             <div class="canvas-wrap">
-                <canvas id="ssl-canvas" role="img" aria-label="A small neural network training live with a contrastive loss; points cluster around a circle into a Vegvísir-like compass."></canvas>
+                <canvas id="ssl-canvas" role="img" aria-label="A small neural network training live with a contrastive loss; points cluster around a circle and form a star when it converges."></canvas>
                 <div id="ssl-tip" class="tip" hidden></div>
+                <div id="tbc" class="tbc" aria-hidden="true">To Be Continued</div>
             </div>
             <div class="stats">
                 <span>step <b id="m-step">0</b></span>
@@ -91,27 +92,26 @@
                 <button type="button" data-reinit>↻ reinit</button>
                 <button type="button" data-tau-step="-0.05" aria-label="Lower temperature">τ−</button>
                 <button type="button" data-tau-step="0.05" aria-label="Raise temperature">τ+</button>
-                <span class="hint">or type <b>train --tau 0.1</b></span>
+
             </div>
-            <p class="pane-note">A 16→32→2 MLP learning with a contrastive (SimCLR) loss on unlabeled points, live on your CPU.
-                It never sees the colors; they're hidden concepts shown only to you. Once it converges, the clusters draw a
-                Vinland Saga Vegvísir. Hover a point to see its two augmented views.</p>
+            <p class="pane-note">A tiny MLP learning a contrastive (SimCLR) loss on unlabeled points, live on your CPU. It never sees the colors.
+                When it converges, the clusters form a star. Hover a point to see its two augmented views.</p>
         </aside>
 
         <section class="session session-b" aria-label="Terminal session, continued">
             <div class="cmd" id="interests">
-                <div class="ps1"><span class="u">kabir@msr</span> <span class="p">~/research</span> <span class="g">git:(main)</span> <span class="arrow">❯</span> <span class="c">cat research_interests.yaml</span></div>
+                <div class="ps1"><span class="arrow">❯</span> <span class="c">cat research_interests.yaml</span></div>
                 <div class="out yaml">
                     <div class="ln"><span class="k">interpretability:</span><span class="v">Understanding what models represent internally and why they behave the way they do: features, circuits, and how they fail.</span></div>
                     <div class="ln"><span class="k">alignment:</span><span class="v">Making models reliably do what we intend, and noticing early when they don't.</span></div>
                     <div class="ln"><span class="k">pretraining:</span><span class="v">How data and objectives during pretraining shape the capabilities and representations of LLMs and MLLMs.</span></div>
-                    <div class="ln"><span class="k">self_supervised_learning:</span><span class="v">Learning useful representations from unlabeled data, like the contrastive model training in pane 1.</span></div>
+                    <div class="ln"><span class="k">self_supervised_learning:</span><span class="v">Learning useful representations from unlabeled data, like the contrastive model training on this page.</span></div>
                     <div class="ln"><span class="k">grounding:</span><span class="v">How multimodal models tie language to what is actually in an image, and what they rely on when they talk about it.</span></div>
                 </div>
             </div>
 
             <div class="cmd" id="career">
-                <div class="ps1"><span class="u">kabir@msr</span> <span class="p">~/research</span> <span class="g">git:(main)</span> <span class="arrow">❯</span> <span class="c">git log --graph career</span></div>
+                <div class="ps1"><span class="arrow">❯</span> <span class="c">git log --graph career</span></div>
                 <div class="out gitlog">
                     <div class="commit">
                         <div class="msg"><span class="hash">a1f3c2e</span> <span class="ref">(HEAD -&gt; main)</span> <b>Research Intern @ Microsoft Research</b></div>
@@ -136,7 +136,7 @@
             </div>
 
             <div class="cmd" id="publications">
-                <div class="ps1"><span class="u">kabir@msr</span> <span class="p">~/research</span> <span class="g">git:(main)</span> <span class="arrow">❯</span> <span class="c">cat publications.bib</span></div>
+                <div class="ps1"><span class="arrow">❯</span> <span class="c">cat publications.bib</span></div>
                 <div class="out bib"><span class="at">@inproceedings</span>{<span class="key">baruah2026twofold</span>,
   <span class="f">title</span>     = {<b>Two-Fold Patch Perturbation for Efficient Self-Supervised Learning in 3D Medical Imaging</b>},
   <span class="f">author</span>    = {Baruah, Tirthajit and <span class="me">Jamadar, Kabir</span> and Rathore, Punit},
@@ -148,11 +148,10 @@
             </div>
 
             <div class="cmd" id="projects">
-                <div class="ps1"><span class="u">kabir@msr</span> <span class="p">~/research</span> <span class="g">git:(main)</span> <span class="arrow">❯</span> <span class="c">ls -l projects/</span></div>
+                <div class="ps1"><span class="arrow">❯</span> <span class="c">ls -l projects/</span></div>
                 <div class="out projects">
-                    <div class="dim">total 5</div>
                     <div class="proj">
-                        <div class="row"><span class="perm">drwxr-xr-x</span><a class="pname" href="https://github.com/kabir2505/tiny-mixtral">tiny-mixtral/</a><span class="tags">moe · gqa · kv-cache</span></div>
+                        <div class="row"><a class="pname" href="https://github.com/kabir2505/tiny-mixtral">tiny-mixtral/</a><span class="tags">moe · gqa · kv-cache</span></div>
                         <p class="desc">A simplified re-implementation of the <b>Mixtral of Experts (MoE)</b> architecture, 175M parameters.</p>
                         <details>
                             <summary>tree</summary>
@@ -165,7 +164,7 @@
                         </details>
                     </div>
                     <div class="proj">
-                        <div class="row"><span class="perm">drwxr-xr-x</span><a class="pname" href="https://github.com/kabir2505/Deep-Learning-History">Deep-Learning-History/</a><span class="tags">numpy · pytorch</span></div>
+                        <div class="row"><a class="pname" href="https://github.com/kabir2505/Deep-Learning-History">Deep-Learning-History/</a><span class="tags">numpy · pytorch</span></div>
                         <p class="desc">A personal deep dive into 18+ foundational and cutting-edge deep learning papers, implemented from scratch in <i>NumPy</i> and <i>PyTorch</i>. The goal: build intuition by understanding the "why" behind each method—not just the code.</p>
                         <details>
                             <summary>tree</summary>
@@ -180,7 +179,7 @@
                         </details>
                     </div>
                     <div class="proj">
-                        <div class="row"><span class="perm">drwxr-xr-x</span><a class="pname" href="https://github.com/kabir2505/funniest-joke-with-LLMs">funniest-joke-with-LLMs/</a><span class="tags">llm-judge · faiss</span></div>
+                        <div class="row"><a class="pname" href="https://github.com/kabir2505/funniest-joke-with-LLMs">funniest-joke-with-LLMs/</a><span class="tags">llm-judge · faiss</span></div>
                         <p class="desc">Can LLMs be funny on purpose? This project explores controlled joke generation using Plan-Search, and ranks results via LLM judges with diverse humor styles.</p>
                         <details>
                             <summary>tree</summary>
@@ -191,7 +190,7 @@
                         </details>
                     </div>
                     <div class="proj">
-                        <div class="row"><span class="perm">drwxr-xr-x</span><a class="pname" href="https://github.com/kabir2505/MangaKensaku">MangaKensaku/</a><span class="tags">clip · faiss · fastapi</span></div>
+                        <div class="row"><a class="pname" href="https://github.com/kabir2505/MangaKensaku">MangaKensaku/</a><span class="tags">clip · faiss · fastapi</span></div>
                         <p class="desc">A FastAPI-based app that retrieves the most relevant manga panels using natural language queries. Built to explore how FAISS performs similarity search on CLIP-based image embeddings.</p>
                         <details>
                             <summary>tree</summary>
@@ -201,7 +200,7 @@
                         </details>
                     </div>
                     <div class="proj">
-                        <div class="row"><span class="perm">drwxr-xr-x</span><a class="pname" href="https://github.com/kabir2505/Prediction_of_Bank_Telemarketing">bank-telemarketing/</a><span class="tags">kaggle · top 25</span></div>
+                        <div class="row"><a class="pname" href="https://github.com/kabir2505/Prediction_of_Bank_Telemarketing">bank-telemarketing/</a><span class="tags">kaggle · top 25</span></div>
                         <p class="desc">Ranked Top 25 out of 1,200+ participants in a Kaggle competition to predict client subscription to term deposits based on telemarketing campaign data.</p>
                         <details>
                             <summary>tree</summary>
@@ -217,7 +216,7 @@
             </div>
 
             <div class="cmd" id="papers">
-                <div class="ps1"><span class="u">kabir@msr</span> <span class="p">~/research</span> <span class="g">git:(main)</span> <span class="arrow">❯</span> <span class="c">cat -n papers_i_love.txt</span></div>
+                <div class="ps1"><span class="arrow">❯</span> <span class="c">cat -n papers_i_love.txt</span></div>
                 <ol class="out numbered">
                     <li><a href="https://arxiv.org/abs/1301.3781">Efficient Estimation of Word Representations in Vector Space</a></li>
                     <li><a href="https://arxiv.org/abs/2602.10067">Features as Rewards: Scalable Supervision for Open-Ended Tasks via Interpretability (RLFR)</a></li>
@@ -229,7 +228,7 @@
             </div>
 
             <div class="cmd" id="trip">
-                <div class="ps1"><span class="u">kabir@msr</span> <span class="p">~/research</span> <span class="g">git:(main)</span> <span class="arrow">❯</span> <span class="c">open trip/ijcai26</span></div>
+                <div class="ps1"><span class="arrow">❯</span> <span class="c">open trip/ijcai26</span></div>
                 <div class="out">
                     <a class="trip-card" href="trip.html">
                         <img src="static/ijcai/thumb/charles-bridge-video.webp" alt="" width="640" height="360" loading="lazy">
@@ -239,18 +238,18 @@
             </div>
 
             <div class="cmd" id="misc">
-                <div class="ps1"><span class="u">kabir@msr</span> <span class="p">~/research</span> <span class="g">git:(main)</span> <span class="arrow">❯</span> <span class="c">cat misc.yaml</span></div>
+                <div class="ps1"><span class="arrow">❯</span> <span class="c">cat misc.yaml</span></div>
                 <div class="out yaml">
                     <div class="ln"><span class="k">books:</span><span class="v">I love reading. Recently: <i>East of Eden</i> (read during my time at IISc Bangalore) and <i>Into Thin Air</i>.</span></div>
                     <div class="ln"><span class="k">guitar:</span><span class="v">Learning the electric guitar. I love the <i>blues</i> — <a href="https://www.instagram.com/reel/DBQVX_gOtk9/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==">cover of Lenny by SRV</a>.</span></div>
-                    <div class="ln"><span class="k">anime:</span><span class="v">Vinland Saga — hence the Vegvísir the model draws in pane 1.</span></div>
+                    <div class="ln"><span class="k">anime:</span><span class="v">JoJo's Bizarre Adventure is my favorite — hence the star, the ゴゴゴ, and the "To Be Continued" in the training pane.</span></div>
                     <div class="ln"><span class="k">fitness:</span><span class="v">Running &amp; hitting the gym.</span></div>
                     <div class="ln"><span class="k">notes:</span><span class="v">Some older <a href="https://kabir25.notion.site/Notes-Blogs-1953fc08703280e48025f01d853e26c6">ML notes &amp; paper summaries</a>.</span></div>
                 </div>
             </div>
 
             <div class="cmd" id="contact">
-                <div class="ps1"><span class="u">kabir@msr</span> <span class="p">~/research</span> <span class="g">git:(main)</span> <span class="arrow">❯</span> <span class="c">echo $EMAIL</span></div>
+                <div class="ps1"><span class="arrow">❯</span> <span class="c">echo $EMAIL</span></div>
                 <div class="out"><a href="mailto:kabir25.dl@gmail.com">kabir25.dl@gmail.com</a> <span class="dim"># reach out to work on projects and collaborate on ML research</span></div>
             </div>
 

@@ -79,8 +79,8 @@ html { background: var(--paper); scroll-behavior: smooth; }
 body {
     margin: 0;
     font-family: var(--mono);
-    font-size: 13.5px;
-    line-height: 1.65;
+    font-size: 14px;
+    line-height: 1.7;
     color: var(--ink);
     background: var(--paper);
     -webkit-font-smoothing: antialiased;
@@ -127,35 +127,27 @@ b { font-weight: 700; }
 /* ---------- panes: session | train (sticky) ---------- */
 .panes {
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: minmax(0, 720px);
     grid-template-areas: "a" "train" "b";
-    max-width: 1440px;
-    margin: 0 auto;
+    justify-content: center;
+    padding: 0 22px;
 }
-.session { grid-area: a; min-width: 0; padding: 18px 22px 0; }
-.session-b { grid-area: b; padding-top: 0; padding-bottom: 28px; }
+.session { grid-area: a; min-width: 0; padding-top: 36px; }
+.session-b { grid-area: b; padding-top: 0; padding-bottom: 36px; }
 .train { grid-area: train; }
 
-@media (min-width: 1000px) {
+@media (min-width: 1080px) {
     .panes {
-        grid-template-columns: minmax(0, 1fr) minmax(340px, 38%);
+        grid-template-columns: minmax(0, 720px) 300px;
         grid-template-areas: "a train" "b train";
         grid-template-rows: auto 1fr;
+        column-gap: 56px;
     }
-    .train {
-        position: sticky;
-        top: var(--bar-h);
-        align-self: start;
-        height: calc(100vh - var(--bar-h) - var(--status-h));
-        overflow-y: auto;
-        border-left: 1px solid var(--rule);
-    }
-    .session { padding: 20px 28px 0; }
-    .session-b { padding-bottom: 32px; }
+    .train { position: sticky; top: calc(var(--bar-h) + 24px); align-self: start; margin-top: 36px; }
 }
 
 /* ---------- commands + prompt ---------- */
-.cmd { margin-bottom: 26px; scroll-margin-top: calc(var(--bar-h) + 12px); }
+.cmd { margin-bottom: 44px; scroll-margin-top: calc(var(--bar-h) + 16px); }
 .cmd.flash { animation: flash 1.4s ease; }
 @keyframes flash { 0% { background: var(--link-soft); } 100% { background: transparent; } }
 
@@ -164,9 +156,9 @@ b { font-weight: 700; }
 .ps1 .p { color: var(--blue); font-weight: 700; }
 .ps1 .g { color: var(--magenta); }
 .ps1 .arrow { color: var(--green); font-weight: 700; }
-.ps1 .c { color: var(--ink); font-weight: 500; }
+.ps1 .c { color: var(--faint); font-weight: 500; }
 
-.out { margin-top: 6px; }
+.out { margin-top: 12px; }
 
 /* whoami */
 .who { display: flex; gap: 16px; align-items: center; }
@@ -183,19 +175,19 @@ b { font-weight: 700; }
 .files a:hover { color: var(--link); }
 
 /* cat about.md: prose reads in Inter */
-.prose { font-family: var(--sans); font-size: 15px; line-height: 1.7; max-width: 72ch; }
-.prose h1 { font-family: var(--mono); font-size: 24px; margin: 8px 0 8px; line-height: 1.25; }
+.prose { font-family: var(--sans); font-size: 15.5px; line-height: 1.75; }
+.prose h1 { font-family: var(--mono); font-size: 26px; margin: 4px 0 12px; line-height: 1.25; }
 .prose h1 .md { color: var(--magenta); }
 .prose p { margin: 0 0 10px; }
 .prose .lede { font-size: 16.5px; color: var(--muted); }
 
 /* yaml */
-.yaml .ln { display: grid; grid-template-columns: 26ch minmax(0, 1fr); gap: 12px; padding: 3px 0; }
+.yaml .ln { display: grid; grid-template-columns: 24ch minmax(0, 1fr); gap: 16px; padding: 6px 0; }
 .yaml .k { color: var(--cyan); }
-.yaml .v { font-family: var(--sans); font-size: 14px; color: var(--ink); }
+.yaml .v { font-family: var(--sans); font-size: 15px; color: var(--ink); }
 
 /* git log --graph */
-.gitlog .commit { position: relative; padding: 0 0 14px 22px; }
+.gitlog .commit { position: relative; padding: 0 0 20px 22px; }
 .gitlog .commit::before {            /* the * node */
     content: '*';
     position: absolute;
@@ -217,10 +209,10 @@ b { font-weight: 700; }
 .gitlog .ref { color: var(--cyan); font-weight: 700; }
 .gitlog .ref.tag { color: var(--magenta); }
 .gitlog .date { color: var(--faint); font-size: 12.5px; }
-.gitlog .desc { font-family: var(--sans); font-size: 14px; color: var(--muted); padding-left: 4ch; }
+.gitlog .desc { font-family: var(--sans); font-size: 15px; color: var(--muted); margin-top: 2px; }
 
 /* bibtex */
-.bib { white-space: pre-wrap; font-size: 12.5px; padding: 12px 14px; border: 1px solid var(--rule); border-radius: 6px; background: var(--panel-soft); }
+.bib { white-space: pre-wrap; font-size: 12.5px; padding: 14px 16px; border: 1px solid var(--rule); border-radius: 6px; background: var(--panel-soft); }
 .bib .at { color: var(--magenta); font-weight: 700; }
 .bib .key { color: var(--yellow); }
 .bib .f { color: var(--cyan); }
@@ -228,13 +220,12 @@ b { font-weight: 700; }
 .me { color: var(--ink); font-weight: 700; text-decoration: underline; text-decoration-color: var(--gold); text-underline-offset: 3px; }
 
 /* ls -l projects/ */
-.proj { padding: 6px 0 10px; }
+.proj { padding: 0 0 18px; }
 .proj .row { display: flex; flex-wrap: wrap; gap: 4px 16px; align-items: baseline; }
 .perm { color: var(--faint); }
 .pname { color: var(--blue); font-weight: 700; }
 .tags { color: var(--yellow); font-size: 12px; }
-.proj .desc { font-family: var(--sans); font-size: 14px; color: var(--muted); margin: 3px 0 2px 12ch; }
-.proj details { margin-left: 12ch; }
+.proj .desc { font-family: var(--sans); font-size: 15px; color: var(--muted); margin: 3px 0 2px; }
 summary { cursor: pointer; color: var(--faint); width: fit-content; list-style: none; font-size: 12.5px; }
 summary::-webkit-details-marker { display: none; }
 summary::before { content: '▸ '; }
@@ -244,7 +235,8 @@ summary:hover { color: var(--link); }
 
 /* cat -n */
 .numbered { list-style: none; counter-reset: n; padding: 0; margin-top: 6px; }
-.numbered li { counter-increment: n; display: grid; grid-template-columns: 5ch minmax(0, 1fr); padding: 1px 0; }
+.numbered li { counter-increment: n; display: grid; grid-template-columns: 4ch minmax(0, 1fr); padding: 3px 0; font-family: var(--sans); font-size: 15px; }
+.numbered li::before { font-family: var(--mono); font-size: 13px; }
 .numbered li::before { content: counter(n); color: var(--faint); text-align: right; padding-right: 1.5ch; }
 
 /* open trip/ijcai26 */
@@ -284,18 +276,27 @@ summary:hover { color: var(--link); }
 .pre.err { color: var(--red); }
 .pre.ok { color: var(--green); }
 .pre.dim { color: var(--faint); }
+.pre.warn { color: var(--yellow); font-weight: 700; }
 
 .foot { display: flex; justify-content: space-between; gap: 12px; margin-top: 28px; font-size: 12px; }
 .res { opacity: 0; filter: blur(5px); transition: opacity 0.3s ease, filter 0.5s ease; transition-delay: 0s; }
 .res:hover { opacity: 1; filter: blur(0); transition-delay: 3s; }
 
 /* ---------- train pane ---------- */
-.train { background: var(--panel-soft); font-size: 12px; display: flex; flex-direction: column; }
+.train {
+    background: var(--panel-soft);
+    font-size: 11.5px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    overflow: hidden;
+}
 .pane-head {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 8px 14px;
+    padding: 7px 12px;
     border-bottom: 1px solid var(--rule);
     color: var(--muted);
     white-space: nowrap;
@@ -313,7 +314,7 @@ summary:hover { color: var(--link); }
 }
 :root[data-run="converged"] .pill { color: var(--green); background: color-mix(in srgb, var(--green) 14%, transparent); }
 
-.canvas-wrap { position: relative; width: 100%; aspect-ratio: 1 / 1; max-height: 46vh; margin: 0 auto; }
+.canvas-wrap { position: relative; width: 100%; aspect-ratio: 1 / 1; margin: 0 auto; overflow: hidden; }
 #ssl-canvas { display: block; width: 100%; height: 100%; cursor: crosshair; touch-action: none; }
 .tip {
     position: absolute;
@@ -327,17 +328,16 @@ summary:hover { color: var(--link); }
     white-space: nowrap;
 }
 
-.stats { display: flex; flex-wrap: wrap; gap: 2px 16px; padding: 8px 14px; border-top: 1px solid var(--rule); color: var(--faint); }
+.stats { display: flex; flex-wrap: wrap; gap: 2px 12px; padding: 7px 12px; border-top: 1px solid var(--rule); color: var(--faint); }
 .stats b { color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
 
 .log {
-    flex: 1;
-    min-height: 120px;
-    padding: 8px 14px;
+    height: 92px;
+    padding: 6px 12px;
     border-top: 1px solid var(--rule);
     color: var(--muted);
-    font-size: 11.5px;
-    line-height: 1.55;
+    font-size: 10.5px;
+    line-height: 1.5;
     white-space: pre;
     overflow: hidden;
     font-variant-numeric: tabular-nums;
@@ -348,7 +348,7 @@ summary:hover { color: var(--link); }
 .log .ok { color: var(--green); font-weight: 700; }
 .log .warn { color: var(--yellow); }
 
-.keys { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 8px 14px; border-top: 1px solid var(--rule); }
+.keys { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 7px 12px; border-top: 1px solid var(--rule); }
 .keys button {
     font: inherit;
     font-size: 11.5px;
@@ -362,7 +362,26 @@ summary:hover { color: var(--link); }
 .keys button:hover { border-color: var(--green); color: var(--green); }
 .keys .hint { color: var(--faint); font-size: 11px; }
 .keys .hint b { color: var(--muted); font-weight: 500; }
-.pane-note { margin: 0; padding: 8px 14px 12px; border-top: 1px solid var(--rule); font-family: var(--sans); font-size: 12px; line-height: 1.55; color: var(--muted); }
+.pane-note { margin: 0; padding: 8px 12px 10px; border-top: 1px solid var(--rule); font-family: var(--sans); font-size: 12px; line-height: 1.55; color: var(--muted); }
+
+.tbc {
+    position: absolute;
+    left: 10px;
+    bottom: 12px;
+    padding: 5px 16px 5px 26px;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 800;
+    font-style: italic;
+    letter-spacing: 0.02em;
+    color: #f6e7b4;
+    background: linear-gradient(#7b6a35, #5b4b22);
+    clip-path: polygon(16px 0, 100% 0, 100% 100%, 16px 100%, 0 50%);
+    transform: translateX(-120%);
+    transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+    pointer-events: none;
+}
+.tbc.show { transform: none; }
 
 /* ---------- tmux status bar ---------- */
 .statusbar {
@@ -536,21 +555,18 @@ summary:hover { color: var(--link); }
 .g-nav:hover, .g-close:hover { background: rgba(255, 255, 255, 0.2); }
 
 /* ---------- small screens ---------- */
-@media (max-width: 999px) {
-    .train { border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); margin: 0 0 26px; }
-    .canvas-wrap { max-width: 420px; max-height: none; }
-    .log { min-height: 0; max-height: 160px; }
+@media (max-width: 1079px) {
+    .train { width: 100%; max-width: 360px; margin: 0 auto 44px; }
 }
 
 @media (max-width: 600px) {
     body { font-size: 12.5px; }
-    .session { padding: 14px 14px 0; }
+    .panes { padding: 0 16px; }
+    .session { padding-top: 22px; }
     .ps1 .g, .ps1 .u { display: none; }
     .title { font-size: 11px; }
     .dots { display: none; }
     .yaml .ln { grid-template-columns: minmax(0, 1fr); gap: 0; padding: 4px 0; }
-    .proj .desc, .proj details { margin-left: 0; }
-    .gitlog .desc { padding-left: 0; }
     .prose h1 { font-size: 20px; }
     .who { align-items: flex-start; }
     .sb-branch, .sb-name, #clock { display: none; }
@@ -564,4 +580,5 @@ summary:hover { color: var(--link); }
 @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     .cmd.flash { animation: none; }
+    .tbc { transition: none; }
 }
