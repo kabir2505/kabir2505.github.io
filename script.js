@@ -213,7 +213,7 @@ if (form) {
     the: args => {
       if ((args[0] || '').toLowerCase() !== 'world') return block(`zsh: command not found: the`, 'err');
       const a = api();
-      if (a) a.freeze(5000);
+      if (a) (a.timeStop || a.freeze)(5000);
       return block('ZA WARUDO! Time has stopped. (training paused for 5 seconds)', 'warn');
     },
   };

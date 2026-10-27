@@ -433,6 +433,8 @@ summary:hover { color: var(--link); }
 
 .canvas-wrap { position: relative; width: 100%; aspect-ratio: 1 / 1; margin: 0 auto; overflow: hidden; }
 #ssl-canvas { display: block; width: 100%; height: 100%; cursor: crosshair; touch-action: none; }
+#ssl-canvas { transition: filter 0.25s ease; }
+.canvas-wrap.timestop #ssl-canvas { filter: invert(1) hue-rotate(180deg) saturate(0.6) contrast(1.1); }   /* ZA WARUDO */
 .tip {
     position: absolute;
     pointer-events: none;
@@ -714,4 +716,5 @@ summary:hover { color: var(--link); }
     html { scroll-behavior: auto; }
     .cmd.flash { animation: none; }
     .tbc { transition: none; }
+    #ssl-canvas { transition: none; }
 }

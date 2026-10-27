@@ -234,6 +234,8 @@
 
     let lossEma = null, alignEma = 0, unifEma = 0, best = Infinity, stall = 0;
     let status = 'training', convergedAt = 0, frozenUntil = 0;
+    let stopStart = -1e9, rippleUntil = 0, stopToken = 0;  // ZA WARUDO + Hamon effects
+    const wrap = hero.closest('.canvas-wrap');
     let stats = null, hover = null, dirty = true, frame = 0, raf = 0, heroVisible = true;
     let colors = {};
 
@@ -255,11 +257,33 @@
       while (logEl.childElementCount > 14) logEl.firstElementChild.remove();
     }
 
+    // ZA WARUDO: freeze training and motion for `ms`, invert the canvas, then resume
+    function timeStop(ms, then) {
+      const token = ++stopToken;
+      const now = performance.now();
+      frozenUntil = now + ms;
+      stopStart = now;
+      convergedAt += ms;                               // frozen time doesn't count toward the auto re-init
+      if (wrap && !reduce) wrap.classList.add('timestop');
+      log('⏸ ZA WARUDO — time has stopped', 'warn');
+      dirty = true;
+      setTimeout(() => {
+        if (token !== stopToken) return;              // a reset happened meanwhile
+        if (wrap) wrap.classList.remove('timestop');
+        log('▶ time resumes', 'warn');
+        if (then) then();
+        dirty = true;
+      }, ms);
+    }
+
     function reset() {
       model.init();
       lossEma = null; best = Infinity; stall = 0;
       log('↻ re-initializing weights…', 'warn');
       if (tbc) tbc.classList.remove('show');
+      stopToken++;                                     // cancel any pending time-stop callback
+      frozenUntil = 0; rippleUntil = 0;
+      if (wrap) wrap.classList.remove('timestop');
       setStatus('training');
       model.embed(E);
       // keep S as-is so the old structure visibly shatters into the new random init
@@ -271,8 +295,15 @@
       if (s === 'converged') {
         convergedAt = performance.now();
         if (was !== 'converged') {
-          log(`✓ checkpoint saved: star.pt (step ${model.step.toLocaleString()})`, 'ok');
-          if (tbc) tbc.classList.add('show');
+          // ZA WARUDO: time stops, then the checkpoint, "To Be Continued" and Hamon ripples
+          const finish = () => {
+            log(`✓ checkpoint saved: star.pt (step ${model.step.toLocaleString()})`, 'ok');
+            if (tbc) tbc.classList.add('show');
+            rippleUntil = performance.now() + 10000;
+            dirty = true;
+          };
+          if (reduce) finish();
+          else timeStop(1800, finish);
           document.dispatchEvent(new CustomEvent('ssl:converged', { detail: { step: model.step, loss: lossEma } }));
         }
       }
@@ -392,6 +423,36 @@
       return [cx + S[2 * i] * r, cy - S[2 * i + 1] * r];
     }
 
+    // the shockwave that sweeps out when time stops
+    function drawShockwave(c, cx, cy, R) {
+      const t = (performance.now() - stopStart) / 900;
+      if (reduce || t < 0 || t >= 1) return;
+      c.save();
+      c.strokeStyle = colors.ink;
+      c.globalAlpha = 1 - t;
+      c.lineWidth = 6 - 5 * t;
+      c.beginPath(); c.arc(cx, cy, R * (0.1 + 1.6 * ease(t)), 0, TAU); c.stroke();
+      c.restore();
+    }
+
+    // Hamon: sunlight-yellow ripples pulsing out from the centre star after convergence
+    function drawRipples(c, cx, cy, R) {
+      const now = performance.now();
+      if (reduce || now >= rippleUntil) return;
+      const fade = Math.min(1, (rippleUntil - now) / 1500);
+      c.save();
+      c.strokeStyle = colors.gold;
+      c.lineWidth = 2;
+      for (let i = 0; i < 3; i++) {
+        const ph = (now / 1200 + i / 3) % 1;
+        c.globalAlpha = (1 - ph) * 0.6 * fade;
+        c.beginPath(); c.arc(cx, cy, R * 0.13 + ph * R * 0.8, 0, TAU); c.stroke();
+      }
+      c.restore();
+    }
+
+    const effectsActive = (now) => !reduce && (now - stopStart < 900 || now < rippleUntil);
+
     function drawScene(c, w, h, cx, cy, R, dot, lw, withHover) {
       c.clearRect(0, 0, w, h);
       c.strokeStyle = colors.rule;
@@ -400,6 +461,7 @@
       const score = stats ? stats.score : 0;
       drawMenacing(c, cx, cy, R, status === 'training' ? 1 - 0.8 * score : 0);
       drawStar(c, cx, cy, R, score, lw);
+      drawRipples(c, cx, cy, R);
       for (let i = 0; i < N; i++) {
         const [x, y] = pos(i, cx, cy, R);
         c.fillStyle = colors.c[model.Y[i]];
@@ -407,6 +469,7 @@
         c.beginPath(); c.arc(x, y, dot, 0, TAU); c.fill();
       }
       c.globalAlpha = 1;
+      drawShockwave(c, cx, cy, R);
       if (withHover && hover) drawHover(c, cx, cy, R, dot);
     }
 
@@ -488,11 +551,15 @@
     function tick() {
       raf = requestAnimationFrame(tick);
       frame++;
-      if (performance.now() < frozenUntil) return;     // ZA WARUDO: time has stopped
-      if (status === 'training') trainStep();
-      else if (performance.now() - convergedAt > 20000) reset();
-      const moved = smooth(0.12);
-      if (moved > 1e-3 || status === 'training' || dirty) render();
+      const now = performance.now();
+      const frozen = now < frozenUntil;                // ZA WARUDO: time has stopped
+      let moved = 0;
+      if (!frozen) {
+        if (status === 'training') trainStep();
+        else if (now - convergedAt > 20000) reset();
+        moved = smooth(0.12);
+      }
+      if (moved > 1e-3 || (!frozen && status === 'training') || dirty || effectsActive(now)) render();
     }
 
     function trainToConvergence() {
@@ -516,13 +583,8 @@
       b.addEventListener('click', () => setTau(model.tau + parseFloat(b.dataset.tauStep)));
     }
     // for the prompt in script.js
-    const freeze = (ms) => {
-      frozenUntil = performance.now() + ms;
-      convergedAt += ms;                               // don't count frozen time toward the auto re-init
-      log('⏸ ZA WARUDO — time has stopped', 'warn');
-      setTimeout(() => log('▶ time resumes', 'warn'), ms);
-    };
-    window.SSL.api = { reinit, setTau, freeze, state: () => ({ step: model.step, loss: lossEma, tau: model.tau, status }) };
+    window.SSL.api = { reinit, setTau, timeStop: (ms) => timeStop(ms), freeze: (ms) => timeStop(ms),
+      state: () => ({ step: model.step, loss: lossEma, tau: model.tau, status }) };
 
     // ---- lifecycle ----
     const start = () => { if (!raf && !reduce) raf = requestAnimationFrame(tick); };
