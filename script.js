@@ -65,7 +65,7 @@ if (form) {
   const FILES = {
     'about.md': 'about', 'research_interests.yaml': 'about', 'career.log': 'career',
     'news.log': 'news', 'publications.bib': 'publications', 'projects/': 'projects', 'papers_i_love.txt': 'papers',
-    'trip/': 'misc', 'misc.yaml': 'misc', 'contact': 'contact',
+    'trip/': 'misc', 'misc.yaml': 'misc',
   };
   const findFile = name => {
     const n = (name || '').replace(/^\.\//, '');
