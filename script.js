@@ -343,10 +343,20 @@ if (form) {
     history.push(text);
     hIdx = history.length;
     const [cmd, ...args] = text.split(/\s+/);
+    // a secret for JoJo fans only (not in help, speedwagon or tab completion): Kakyoin's cherry
+    if (/^(rero[\s-]*){2,}$/i.test(text)) {
+      window.open('https://kabir25.notion.site/Res-1eb3fc08703280a988e2df082a443e1c?pvs=4', '_blank', 'noopener');
+      return show(text, block('レロレロレロレロ… 🍒  (a secret page just opened in a new tab)', 'ok'));
+    }
     const stand = STANDS[text.toLowerCase().replace(/[-_\s]+/g, ' ')];
     const fn = stand ? () => (api() ? stand(api()) : block('the Stand has no one to act on', 'err')) : COMMANDS[cmd.toLowerCase()];
     const result = fn ? fn(args, text) : block(`zsh: command not found: ${cmd}`, 'err');
     if (cmd === 'clear') return;
+    show(text, result);
+  };
+
+  // print a typed command and its output above the prompt
+  function show(text, result) {
     const entry = document.createElement('div');
     entry.className = 'cmd typed';
     const ps1 = document.createElement('div');
@@ -359,7 +369,7 @@ if (form) {
       entry.append(result);
     }
     out.append(entry);
-  };
+  }
 
   form.addEventListener('submit', e => {
     e.preventDefault();
