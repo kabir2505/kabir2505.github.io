@@ -61,12 +61,9 @@
                         At <a href="https://precog.iiit.ac.in/">Precog, IIIT Hyderabad</a>, with <a class="prof" href="https://scholar.google.com/citations?user=MfzQyP8AAAAJ&hl=en">Prof. Ponnurangam Kumaraguru</a>, I studied interpretability in multimodal LLMs,
                         looking at how grounded conversational models connect what they say to what they see.</p>
                     <p>Before that, at <a href="https://www.vistalabiisc.com/">VISTA Lab, IISc Bangalore</a> with <a class="prof" href="https://www.vistalabiisc.com/P_portfolio">Prof. Punit Rathore</a>,
-                        I worked on teaching models to understand CT and MRI scans without needing radiologists to label them first. Self-supervised pretraining
-                        does exactly that, but in 3D it gets very expensive. Our method, <a href="https://github.com/kabir2505/Two-Fold">Two-Fold Patch Perturbation</a>,
-                        keeps it simple: randomly pick patches of a scan, rotate them, and train one encoder in a single forward pass to rebuild them,
-                        find which were disturbed, and work out how. It matches or beats the state of the art on most benchmarks while using about 80% less GPU memory
-                        and 14× less compute, and it transfers surprisingly well from CT to MRI. It became our <a href="#publications">IJCAI-ECAI 2026 paper</a>,
-                        which I got to present in Bremen in August.</p>
+                        I worked on making self-supervised pretraining for 3D medical scans cheap enough to actually use. Our method,
+                        <a href="https://github.com/kabir2505/Two-Fold">Two-Fold Patch Perturbation</a>, uses about 80% less GPU memory and 14× less compute
+                        than the state of the art. It became our <a href="#publications">IJCAI-ECAI 2026 paper</a>, which I got to present in Bremen in August.</p>
                     <p>I learn best by building things from scratch. I've re-implemented 18+ deep learning papers in NumPy and PyTorch, trained a small
                         Mixtral-style mixture of experts, and wandered into side quests like getting LLMs to be funny on purpose.
                         That same habit is why there's a neural network training on this page.</p>
