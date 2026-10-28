@@ -7,7 +7,9 @@
     <title>Kabir J</title>
     <meta name="description" content="Kabir Jamadar — research on interpretability, self-supervised learning, embeddings and multimodal LLMs.">
     <script>
-        try { var t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+        var t = 'dark';                                   // black by default; ◐ switches and is remembered
+        try { t = localStorage.getItem('theme') || t; } catch (e) {}
+        document.documentElement.dataset.theme = t;
     </script>
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -16,7 +18,6 @@
         <div class="titlebar-top">
             <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
             <span class="title">kabir@msr — zsh — ~/research</span>
-            <a class="trip-pill" href="trip.html">📸 IJCAI '26 trip</a>
             <button id="theme-toggle" class="theme-btn" type="button" aria-label="Toggle dark mode">◐</button>
         </div>
         <nav class="tabs" aria-label="Sections">
@@ -46,22 +47,19 @@
                     <a href="https://github.com/kabir2505">GitHub</a>
                     <a href="https://www.linkedin.com/in/kabir-jamadar-31b679249/">LinkedIn</a>
                     <a href="https://twitter.com/kabir_j25">Twitter</a>
-                    <a href="https://www.goodreads.com/user/show/187910952-kabir">Goodreads</a>
                 </div>
                 <div class="interests" aria-label="Research interests">
                     <span class="chips-label">interests</span>
-                    <span class="chip" title="Understanding what models represent internally and why they behave the way they do.">interpretability</span>
-                    <span class="chip" title="Making models reliably do what we intend, and noticing early when they don't.">alignment</span>
-                    <span class="chip" title="How data and objectives during pretraining shape LLMs and MLLMs.">pretraining</span>
-                    <span class="chip" title="Learning useful representations from unlabeled data, like the model training on this page.">self-supervised learning</span>
-                    <span class="chip" title="How multimodal models tie language to what is actually in an image.">grounding</span>
+                    <span class="chip" title="Understanding what models represent internally, why they behave the way they do, and making them reliably do what we intend.">interpretability &amp; alignment</span>
+                    <span class="chip" title="Learning useful representations from unlabeled data, like the model training on this page.">self-supervised pretraining</span>
+                    <span class="chip" title="How models tie language to what is actually in an image, and what they rely on when they talk about it.">multimodality</span>
                 </div>
                 <div class="prose">
                     <p class="lede">I'm a Research Intern at <b>Microsoft Research Bangalore</b> (from November 2026), working on embeddings, and a Data Science student at IIT Madras.</p>
                     <p>Most of my work comes back to one question: what is actually going on inside a model, both when it works and when it doesn't?
                         At <a href="https://precog.iiit.ac.in/">Precog, IIIT Hyderabad</a>, with <a class="prof" href="https://scholar.google.com/citations?user=MfzQyP8AAAAJ&hl=en">Prof. Ponnurangam Kumaraguru</a>, I studied interpretability in multimodal LLMs,
                         looking at how grounded conversational models connect what they say to what they see. Before that, at
-                        <a href="https://www.vistalabiisc.com/">VISTA Lab, IISc Bangalore</a> with <a class="prof" href="https://www.punitrathore.com/home">Prof. Punit Rathore</a>, I worked on self-supervised learning for 3D medical imaging,
+                        <a href="https://www.vistalabiisc.com/">VISTA Lab, IISc Bangalore</a> with <a class="prof" href="https://www.vistalabiisc.com/P_portfolio">Prof. Punit Rathore</a>, I worked on self-supervised learning for 3D medical imaging,
                         which became our <a href="#publications">IJCAI-ECAI 2026 paper</a>. I got to present it in Bremen in August.</p>
                     <p>I learn best by building things from scratch. I've re-implemented 18+ deep learning papers in NumPy and PyTorch, trained a small
                         Mixtral-style mixture of experts, and wandered into side quests like getting LLMs to be funny on purpose.
@@ -102,7 +100,7 @@
         <aside class="now" aria-label="Currently">
             <div class="now-head"><span class="arrow">❯</span> cat now.txt</div>
             <div class="now-row"><span class="now-k">💼 working</span><span>Research Intern at <b>Microsoft Research Bangalore</b></span></div>
-            <div class="now-row"><span class="now-k">📖 reading</span><span><a href="https://www.goodreads.com/book/show/6162.All_the_Pretty_Horses"><i>All the Pretty Horses</i></a> by Cormac McCarthy</span></div>
+            <div class="now-row"><span class="now-k">📖 reading</span><span><i>All the Pretty Horses</i> by Cormac McCarthy</span></div>
             <div class="now-row"><span class="now-k">🎸 learning</span><span><a href="https://www.youtube.com/results?search_query=guthrie+govan+remember+when"><i>Remember When</i></a> by Guthrie Govan</span></div>
         </aside>
         </div>
@@ -130,7 +128,7 @@
                 <div class="sec-head"><h2>Publications</h2><span class="cmdline"><span class="arrow">❯</span> cat publications.bib</span></div>
                 <div class="out pub">
                     <div class="pub-title">Two-Fold Patch Perturbation for Efficient Self-Supervised Learning in 3D Medical Imaging</div>
-                    <div class="pub-meta">Tirthajit Baruah, <span class="me">Kabir Jamadar</span>, <a class="prof" href="https://www.punitrathore.com/home">Punit Rathore</a> · <a href="https://www.vistalabiisc.com/">VISTA Lab, IISc</a></div>
+                    <div class="pub-meta">Tirthajit Baruah, <span class="me">Kabir Jamadar</span>, <a class="prof" href="https://www.vistalabiisc.com/P_portfolio">Punit Rathore</a> · <a href="https://www.vistalabiisc.com/">VISTA Lab, IISc</a></div>
                     <div class="pub-meta"><a href="https://2026.ijcai.org/">IJCAI-ECAI 2026</a> · The 35th International Joint Conference on Artificial Intelligence <span class="badge">accepted</span></div>
                     <div class="pub-links"><a href="https://github.com/kabir2505/Two-Fold">&lt;/&gt; code</a> · <a href="trip.html">📸 conference trip photos →</a></div>
                     <details>
@@ -161,7 +159,7 @@
                     <div class="commit">
                         <div class="date">Sep 2025 – Jan 2026</div>
                         <div class="msg"><b>Research Intern, <a href="https://www.vistalabiisc.com/">VISTA Lab, IISc Bangalore</a></b></div>
-                        <div class="desc">Self-supervised learning for 3D medical imaging with <a class="prof" href="https://www.punitrathore.com/home">Prof. Punit Rathore</a>, which led to our <a href="#publications">IJCAI-ECAI 2026 paper</a>.</div>
+                        <div class="desc">Self-supervised learning for 3D medical imaging with <a class="prof" href="https://www.vistalabiisc.com/P_portfolio">Prof. Punit Rathore</a>, which led to our <a href="#publications">IJCAI-ECAI 2026 paper</a>.</div>
                     </div>
                     <div class="commit last">
                         <div class="date">Sep 2022 – present</div>
@@ -262,7 +260,6 @@
                     <div class="ln"><span class="k">trip</span><span class="v"><a href="trip.html">📸 IJCAI-ECAI '26 trip</a>: Bremen, Prague, Dresden, Berlin and Moritzburg in photos &amp; videos.</span></div>
                     <div class="ln"><span class="k">books</span><span class="v">I love reading. Recently: <i>East of Eden</i> (read during my time at IISc Bangalore) and <i>Into Thin Air</i>.</span></div>
                     <div class="ln"><span class="k">guitar</span><span class="v">Learning the electric guitar. I love the <i>blues</i> — <a href="https://www.instagram.com/reel/DBQVX_gOtk9/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==">cover of Lenny by SRV</a>.</span></div>
-                    <div class="ln"><span class="k">anime</span><span class="v">JoJo's Bizarre Adventure is my favorite — hence the ゴゴゴ, the time-stop, the star, the Hamon ripples and the "To Be Continued" in the training pane.</span></div>
                     <div class="ln"><span class="k">fitness</span><span class="v">Running &amp; hitting the gym.</span></div>
                     <div class="ln"><span class="k">notes</span><span class="v">Some older <a href="https://kabir25.notion.site/Notes-Blogs-1953fc08703280e48025f01d853e26c6">ML notes &amp; paper summaries</a>.</span></div>
                 </div>
@@ -284,6 +281,7 @@
 
             <footer class="foot">
                 <span class="dim"># trained live in your browser · no GPUs were harmed</span>
+                <span class="dim jojo-note"># the ゴゴゴ, time-stops, star and Stands are a love letter to JoJo's Bizarre Adventure · ask <b>speedwagon</b></span>
                 <span class="res"><a href="https://kabir25.notion.site/Res-1eb3fc08703280a988e2df082a443e1c?pvs=4">Res</a></span>
             </footer>
         </section>

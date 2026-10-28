@@ -7,7 +7,9 @@
     <title>IJCAI '26 Trip · Kabir J</title>
     <meta name="description" content="Photos and videos from Kabir's IJCAI-ECAI 2026 trip: Bremen, Prague, Dresden, Berlin and Moritzburg.">
     <script>
-        try { var t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+        var t = 'dark';                                   // black by default; ◐ switches and is remembered
+        try { t = localStorage.getItem('theme') || t; } catch (e) {}
+        document.documentElement.dataset.theme = t;
     </script>
     <link rel="stylesheet" href="styles.css">
     <link rel="preload" href="static/ijcai/gallery.json" as="fetch" crossorigin>
