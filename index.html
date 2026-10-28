@@ -53,14 +53,20 @@
                     <span class="chip" title="Understanding what models represent internally, why they behave the way they do, and making them reliably do what we intend.">interpretability &amp; alignment</span>
                     <span class="chip" title="Learning useful representations from unlabeled data, like the model training on this page.">self-supervised pretraining</span>
                     <span class="chip" title="How models tie language to what is actually in an image, and what they rely on when they talk about it.">multimodality</span>
+                    <span class="chip" title="Making representation learning cheap and reliable enough for medical imaging, where labels are scarce and expensive.">AI for healthcare</span>
                 </div>
                 <div class="prose">
                     <p class="lede">I'm a Research Intern at <b>Microsoft Research Bangalore</b> (from November 2026), working on embeddings, and a Data Science student at IIT Madras.</p>
                     <p>Most of my work comes back to one question: what is actually going on inside a model, both when it works and when it doesn't?
                         At <a href="https://precog.iiit.ac.in/">Precog, IIIT Hyderabad</a>, with <a class="prof" href="https://scholar.google.com/citations?user=MfzQyP8AAAAJ&hl=en">Prof. Ponnurangam Kumaraguru</a>, I studied interpretability in multimodal LLMs,
-                        looking at how grounded conversational models connect what they say to what they see. Before that, at
-                        <a href="https://www.vistalabiisc.com/">VISTA Lab, IISc Bangalore</a> with <a class="prof" href="https://www.vistalabiisc.com/P_portfolio">Prof. Punit Rathore</a>, I worked on self-supervised learning for 3D medical imaging,
-                        which became our <a href="#publications">IJCAI-ECAI 2026 paper</a>. I got to present it in Bremen in August.</p>
+                        looking at how grounded conversational models connect what they say to what they see.</p>
+                    <p>Before that, at <a href="https://www.vistalabiisc.com/">VISTA Lab, IISc Bangalore</a> with <a class="prof" href="https://www.vistalabiisc.com/P_portfolio">Prof. Punit Rathore</a>,
+                        I worked on teaching models to understand CT and MRI scans without needing radiologists to label them first. Self-supervised pretraining
+                        does exactly that, but in 3D it gets very expensive. Our method, <a href="https://github.com/kabir2505/Two-Fold">Two-Fold Patch Perturbation</a>,
+                        keeps it simple: randomly pick patches of a scan, rotate them, and train one encoder in a single forward pass to rebuild them,
+                        find which were disturbed, and work out how. It matches or beats the state of the art on most benchmarks while using about 80% less GPU memory
+                        and 14× less compute, and it transfers surprisingly well from CT to MRI. It became our <a href="#publications">IJCAI-ECAI 2026 paper</a>,
+                        which I got to present in Bremen in August.</p>
                     <p>I learn best by building things from scratch. I've re-implemented 18+ deep learning papers in NumPy and PyTorch, trained a small
                         Mixtral-style mixture of experts, and wandered into side quests like getting LLMs to be funny on purpose.
                         That same habit is why there's a neural network training on this page.</p>
