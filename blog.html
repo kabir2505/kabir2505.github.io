@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="static/icon_1.png">
+    <title>Blog · Kabir J</title>
+    <meta name="description" content="Kabir Jamadar's blog: notes on research, events and learning.">
+    <script>
+        var t = 'dark';                                   // black by default; ◐ switches and is remembered
+        try { t = localStorage.getItem('theme') || t; } catch (e) {}
+        document.documentElement.dataset.theme = t;
+    </script>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preload" href="blog/posts.json" as="fetch" crossorigin>
+</head>
+<body>
+    <header class="titlebar">
+        <div class="titlebar-top">
+            <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="title"><a href="index.html">kabir@msr — zsh — ~/research</a>/blog</span>
+            <a class="trip-pill" href="index.html">← home</a>
+            <button id="theme-toggle" class="theme-btn" type="button" aria-label="Toggle dark mode">◐</button>
+        </div>
+    </header>
+
+    <main class="solo blog">
+        <div class="ps1"><span class="arrow">❯</span> <span class="c">ls -lt blog/</span></div>
+        <h1>Blog</h1>
+        <p class="lede">Notes on research, events, and things I'm learning, mostly written so I don't forget them.</p>
+        <div id="blog-list" class="post-list"><p class="dim">loading…</p></div>
+    </main>
+
+    <footer class="statusbar">
+        <span class="sb-name">[kabir]</span>
+        <a class="win" href="index.html">0:zsh</a>
+        <a class="win" href="index.html#train">1:train</a>
+        <a class="win" href="trip.html">2:trip</a>
+        <a class="win active" href="blog.html">3:blog*</a>
+        <span class="sb-right">
+            <span class="sb-branch">⎇ main</span>
+            <span id="clock"></span>
+        </span>
+    </footer>
+
+    <script src="script.js" defer></script>
+    <script src="blog.js" defer></script>
+</body>
+</html>

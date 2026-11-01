@@ -86,6 +86,7 @@ Other things to try: `help`, `ls`, `cat career.log`, `nvidia-smi`, `muda`, `yare
 - `index.html`, `styles.css`, `script.js`: the page, terminal theme, prompt and commands
 - `ssl.js`: the contrastive model (training, rendering, JoJo effects, time Stands)
 - `trip.html`, `gallery.js`, `static/ijcai/`: the IJCAI-ECAI '26 trip gallery
+- `blog.html`, `post.html`, `blog.js`, `blog/`: the blog. Posts are Markdown files in `blog/posts/<slug>.md`, listed in `blog/posts.json` (newest first); `post.html?slug=<slug>` renders one. To add a post, drop in the `.md` file and add its entry to `posts.json`.
 - `tools/build_gallery.py`: compresses trip photos/videos into web-sized assets
 
 Static site, no build step. Run it locally with `python3 -m http.server` and open `localhost:8000`.

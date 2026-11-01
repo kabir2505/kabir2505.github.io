@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="static/icon_1.png">
+    <title>Post · Kabir J</title>
+    <script>
+        var t = 'dark';                                   // black by default; ◐ switches and is remembered
+        try { t = localStorage.getItem('theme') || t; } catch (e) {}
+        document.documentElement.dataset.theme = t;
+    </script>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preload" href="blog/posts.json" as="fetch" crossorigin>
+</head>
+<body>
+    <div class="progress" aria-hidden="true"><div id="progress"></div></div>
+    <header class="titlebar">
+        <div class="titlebar-top">
+            <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="title"><a href="index.html">kabir@msr — zsh — ~/research</a>/<a href="blog.html">blog</a></span>
+            <a class="trip-pill" href="blog.html">← all posts</a>
+            <button id="theme-toggle" class="theme-btn" type="button" aria-label="Toggle dark mode">◐</button>
+        </div>
+    </header>
+
+    <main class="solo blog">
+        <div class="ps1" id="post-cmd"><span class="arrow">❯</span> cat blog/…</div>
+        <header class="post-head">
+            <div class="post-meta" id="post-meta"></div>
+            <h1 id="post-title">Loading…</h1>
+            <p class="lede" id="post-dek"></p>
+        </header>
+        <hr class="post-rule">
+        <article id="post" class="post-body"></article>
+        <div id="post-eof" class="post-eof dim" hidden># EOF</div>
+        <nav id="post-nav" class="post-nav" aria-label="More posts"></nav>
+    </main>
+
+    <footer class="statusbar">
+        <span class="sb-name">[kabir]</span>
+        <a class="win" href="index.html">0:zsh</a>
+        <a class="win" href="index.html#train">1:train</a>
+        <a class="win" href="trip.html">2:trip</a>
+        <a class="win active" href="blog.html">3:blog*</a>
+        <span class="sb-right">
+            <span class="sb-branch">⎇ main</span>
+            <span id="clock"></span>
+        </span>
+    </footer>
+
+    <script src="script.js" defer></script>
+    <script src="blog.js" defer></script>
+</body>
+</html>
