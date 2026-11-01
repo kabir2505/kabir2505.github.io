@@ -4,7 +4,7 @@ This post is mostly a record for myself, so I don't forget what I heard. Writing
 
 #### what the panel kept coming back to
 
-The panel had [Prateek Jain](https://www.prateekjain.org/), Ranjita Bhagwan, [Prof. Animesh Mukherjee](https://cse.iitkgp.ac.in/~animeshm/), [Prof. Mausam](https://www.cse.iitd.ac.in/~mausam/) and [Partha Talukdar](https://parthatalukdar.github.io/). The questions were about research careers and AI, but the answers kept circling the same few ideas.
+The panel had [Prateek Jain](https://www.prateekjain.org/), [Ranjita Bhagwan](https://research.google/people/ranjita-bhagwan/), [Prof. Animesh Mukherjee](https://cse.iitkgp.ac.in/~animeshm/), [Prof. Mausam](https://www.cse.iitd.ac.in/~mausam/) and [Partha Talukdar](https://parthatalukdar.github.io/). The questions were about research careers and AI, but the answers kept circling the same few ideas.
 
 ##### Don't let the robot lift for you
 
@@ -36,7 +36,7 @@ Research needs rigor. Expect to fail ten times before something works. There are
 
 #### Talks I enjoyed
 
-**Manish Gupta's opening keynote.** He had a live conversation with Gemini, switching between Hindi, English and Haryanvi mid-sentence. It was genuinely funny, and honestly a little surprising how smoothly Gemini kept up.
+**[Manish Gupta](https://www.linkedin.com/in/manish-gupta-4556591/)'s opening keynote.** He had a live conversation with Gemini, switching between Hindi, English and Haryanvi mid-sentence. It was genuinely funny, and honestly a little surprising how smoothly Gemini kept up.
 
 **[Mausam](https://www.cse.iitd.ac.in/~mausam/)'s keynote on AI for materials and medicine.** Close to an hour long, and I didn't look at my phone once. Same energy as on the panel, just pointed at science this time.
 
@@ -48,7 +48,7 @@ Research needs rigor. Expect to fail ten times before something works. There are
 
 I got some time with **[Partha Talukdar](https://parthatalukdar.github.io/)** and asked him about using AI to find research directions and ideate on niche problems. His answer came back to what the panel kept saying: you build intuition and taste by doing research, over and over. There isn't a tool that gives you that (yet).
 
-I also had long conversations with Vignesh, a BTech student at IIT Madras working on AI for wireless, about pursuing research, how we each think about it, and where we want our careers to go. Some of the best parts of the two days happened outside the sessions.
+I also had long conversations with [Vignesh](https://www.linkedin.com/in/vignesh--n/), a BTech student at IIT Madras working on AI for wireless, about pursuing research, how we each think about it, and where we want our careers to go. Some of the best parts of the two days happened outside the sessions.
 
 The talent density at the event was a bit absurd. Every conversation over lunch or tea ended with me learning something.
 
