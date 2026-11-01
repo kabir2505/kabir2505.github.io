@@ -48,10 +48,12 @@ Research needs rigor. Expect to fail ten times before something works. There are
 
 I got some time with **[Partha Talukdar](https://parthatalukdar.github.io/)** and asked him about using AI to find research directions and ideate on niche problems. His answer came back to what the panel kept saying: you build intuition and taste by doing research, over and over. There isn't a tool that gives you that (yet).
 
-I also had long conversations with [Vignesh](https://www.linkedin.com/in/vignesh--n/), a BTech student at IIT Madras working on AI for wireless, about pursuing research, how we each think about it, and where we want our careers to go. Some of the best parts of the two days happened outside the sessions.
+I also had long conversations with [Vignesh](https://www.linkedin.com/in/vignesh--n/) from IIT Madras, who works on AI for wireless, about pursuing research, how we each think about it, and where we want our careers to go. Some of the best parts of the two days happened outside the sessions.
 
 The talent density at the event was a bit absurd. Every conversation over lunch or tea ended with me learning something.
 
+<!-- hidden for now; remove these comment markers to show it again
 #### Closing
 
 I start at Microsoft Research tomorrow. If I had to compress the two days into one note to myself: think before you prompt, verify after, and don't expect shortcuts. Being around that many people doing serious work made me want to work harder, and I'm going to try to hold on to that feeling.
+-->

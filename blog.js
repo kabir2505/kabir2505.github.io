@@ -25,7 +25,8 @@
   }
 
   function markdown(md) {
-    const lines = String(md).replace(/\r/g, '').split('\n');
+    // <!-- … --> comments are dropped, so a section can be hidden without deleting it
+    const lines = String(md).replace(/\r/g, '').replace(/<!--[\s\S]*?-->/g, '').split('\n');
     const out = [];
     let i = 0;
     const isBlank = (l) => !l.trim();
