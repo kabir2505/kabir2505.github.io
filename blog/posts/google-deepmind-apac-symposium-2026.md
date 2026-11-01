@@ -26,7 +26,7 @@ Someone asked which skills will persist. Roughly in order of how much the panel 
 4. **Adapting to change.** [Partha](https://parthatalukdar.github.io/) talked about being comfortable with uncertainty and making progress anyway.
 5. **People.** Talking, collaborating, building a network.
 
-And least important? Writing code from scratch. As someone who has spent a lot of evenings reimplementing papers line by line, that one stung a little. I think the point is that the _understanding_ you get from doing it matters more than the act itself.
+As someone who has spent a lot of evenings reimplementing papers line by line, writing code from scratch is close to my heart. I think the point is that the _understanding_ you get from doing it matters more than the act itself. Debugging is important too.
 
 ##### Rigor, and no shortcuts
 
